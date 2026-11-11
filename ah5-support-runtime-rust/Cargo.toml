@@ -1,0 +1,101 @@
+[package]
+name = "arrowhead-support-rust"
+version = "5.2.2"
+edition = "2024"
+rust-version = "1.89"
+license = "EPL-2.0"
+description = "Native Rust development implementations of Arrowhead support systems"
+default-run = "arrowhead-support"
+
+[dependencies]
+rusqlite = { version = "0.38", features = ["bundled"] }
+arrowhead-messaging-rust = { path = "../ah5-messaging-rust" }
+axum = "0.8.9"
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+http-body-util = "0.1"
+hyper-util = { version = "0.1", features = ["server-auto", "tokio", "service"] }
+percent-encoding = "2"
+regex = "1"
+reqwest = { version = "0.12.28", default-features = false, features = ["json", "rustls-tls"] }
+ring = "0.17.14"
+rustls = { version = "0.23.46", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-pki-types = { version = "1", features = ["std"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "signal", "time", "sync", "io-util"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12"] }
+tower = { version = "0.5", features = ["util"] }
+url = "2"
+uuid = { version = "1", features = ["v4"] }
+openssl = { version = "0.10", features = ["vendored"] }
+
+[[bin]]
+name = "arrowhead-support"
+path = "src/main.rs"
+
+[[bin]]
+name = "support-documentation"
+path = "src/bin/documentation.rs"
+
+[[bin]]
+name = "aigym"
+path = "../ah5-AIGym-rust/src/main.rs"
+
+[[bin]]
+name = "blacklist"
+path = "../ah5-Blacklist-rust/src/main.rs"
+
+[[bin]]
+name = "certificateauthority"
+path = "../ah5-CertificateAuthority-rust/src/main.rs"
+
+[[bin]]
+name = "choreographer"
+path = "../ah5-Choreographer-rust/src/main.rs"
+
+[[bin]]
+name = "configuration"
+path = "../ah5-Configuration-rust/src/main.rs"
+
+[[bin]]
+name = "datamanager"
+path = "../ah5-DataManager-rust/src/main.rs"
+
+[[bin]]
+name = "deviceqosevaluator"
+path = "../ah5-DeviceQoSEvaluator-rust/src/main.rs"
+
+[[bin]]
+name = "eventhandler"
+path = "../ah5-EventHandler-rust/src/main.rs"
+
+[[bin]]
+name = "gatekeeper"
+path = "../ah5-Gatekeeper-rust/src/main.rs"
+
+[[bin]]
+name = "gatetunnel"
+path = "../ah5-GateTunnel-rust/src/main.rs"
+
+[[bin]]
+name = "onboarding"
+path = "../ah5-Onboarding-rust/src/main.rs"
+
+[[bin]]
+name = "plantdescriptionengine"
+path = "../ah5-PlantDescriptionEngine-rust/src/main.rs"
+
+[[bin]]
+name = "sysmonitor"
+path = "../ah5-SysMonitor-rust/src/main.rs"
+
+[[bin]]
+name = "timemanager"
+path = "../ah5-TimeManager-rust/src/main.rs"
+
+[[bin]]
+name = "translationmanager"
+path = "../ah5-TranslationManager-rust/src/main.rs"
+

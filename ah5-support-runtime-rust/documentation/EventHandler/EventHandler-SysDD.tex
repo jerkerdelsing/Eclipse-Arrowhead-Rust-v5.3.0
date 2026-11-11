@@ -1,0 +1,48 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\begin{document}
+\ArrowheadTitle{EventHandler (Rust)}
+\ArrowheadType{System Design Description}
+\ArrowheadTypeShort{Rust}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-17}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- Rust support development port}
+\ArrowheadSetup
+\section{EventHandler}
+\subsection{System overview}
+Native Rust development profile for local Java source \path{EventHandler/}. One independently configured executable, identity, port and state file per role. No Java, Go or Python process implements the service. Some essential operations are explicitly unavailable.
+\subsection{Design and trust boundaries}
+Tokio/Hyper/Axum with rustls enforces mutual TLS. Certificate chain, validity, local CN/profile and startup-configured optional CRLs are checked. CRLs need process restart to refresh; without CRLs no revocation enforcement is claimed. Tokens are verified with Authentication and bound to the TLS identity. Business calls require ConsumerAuthorization; management requires a verified sysop or explicit broad whitelist. CA provisioning instead applies Java-style named certificate-principal rights. Outbound authorities are pinned to expected CN/profile before credentials are sent, in addition to chain, SAN and time validation.
+\subsection{Persistent state}
+Independent locked atomic JSON replaces SQL. Clone/validate/fsync/rename commits prevent partially published local transactions. Rename is the commit point; directory-sync failure is an uncertain durable commit, not a rollback. Owner-only keys/password files are separate. Network effects are not distributed transactions; interrupted starts and bridge operations require reconciliation. No automatic Java state import, clustering or deployment is delivered.
+\subsection{Implemented behavior}
+Owned subscriptions, metadata filtering, HTTPS outbox
+\subsection{Open release gates}
+MQTT, full retry strategy; callback origins need explicit upstream allowlist; at-least-once delivery. All systems remain development profiles, not certified interchangeable Java replacements. See \path{COMPATIBILITY.md} for detailed DTO fields and restrictions; the Java sources remain the authoritative contract.
+\subsection{Produced and consumed services}
+Advertised implemented HTTPS definitions: \path{echo}, \allowbreak \path{eventHandlerManagement}, \allowbreak \path{eventPublish}, \allowbreak \path{eventSubscription}, \allowbreak \path{generalManagement}.\par
+Authorities consumed as applicable: Authentication, ServiceRegistry, ConsumerAuthorization and explicitly configured pinned adapter/provider origins. Only implemented operations are registered. Service versions are 1.0.0 except Gatekeeper/GateTunnel 5.2.2. No AMQP sysMonitor.observe implementation is advertised.
+\subsection{HTTPS operations}
+JSON unless raw configuration bytes, PEM CRL or echo text. Bodies: 1 MiB; remote responses: 8 MiB. Header: \texttt{Bearer IDENTITY-TOKEN//token}. Unknown routes return 404, absent dependencies 503. Unported operations return 501 after applicable access checks and are excluded from registration. Route presence is not semantic parity.
+\begin{longtable}{p{0.09\textwidth}p{0.59\textwidth}p{0.20\textwidth}}\toprule
+Method & Path & Access / status\\\midrule\endhead
+\texttt{GET} & \path{/eventhandler/general/mgmt/get-config} & management\\
+\texttt{POST} & \path{/eventhandler/general/mgmt/logs} & management\\
+\texttt{GET} & \path{/eventhandler/monitor/echo} & certificate\\
+\texttt{POST} & \path{/eventhandler/event-publish/publish} & identity\\
+\texttt{POST} & \path{/eventhandler/event-subscription/subscribe} & identity\\
+\texttt{DELETE} & \path{/eventhandler/event-subscription/unsubscribe/{subscriptionId}} & identity\\
+\texttt{GET} & \path{/eventhandler/management/subscriptions} & management\\
+\texttt{PUT} & \path{/eventhandler/management/subscriptions/{subscriptionId}} & management\\
+\texttt{DELETE} & \path{/eventhandler/management/subscriptions/{subscriptionId}} & management\\
+\bottomrule\end{longtable}
+Error envelope: errorMessage, errorCode, exceptionType, origin and timestamp. Full Java status, DTO and validation equivalence requires differential testing.
+\section{References and qualification}
+See \path{contracts.json} for local Java SHA256 hashes/mappings, \path{COMPATIBILITY.md} for DTO details and gaps, and \path{VERIFICATION.md} for tests actually run. No upstream release-tag provenance, complete replacement or real-cloud interoperability is asserted.\end{document}

@@ -1,0 +1,31 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\begin{document}
+\ArrowheadTitle{generalManagement (Rust)}
+\ArrowheadType{Service Description}
+\ArrowheadTypeShort{SD}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-16}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- native Rust core implementations}
+\ArrowheadSetup
+\section{Service overview}
+Definition: \path{generalManagement}.\par
+Service version: 1.0.0. Produced by: \path{Authentication}.\par
+Interface: \texttt{generic\_https}, policy \texttt{CERT\_AUTH}; the application additionally enforces identity/management/ownership rules. Base path: \path{/authentication}.
+\section{Operations}
+\begin{longtable}{p{0.32\textwidth}p{0.12\textwidth}p{0.46\textwidth}}\toprule
+Operation & Method & Relative path\\\midrule\endhead
+\path{get-config} & \texttt{GET} & \path{/general/mgmt/get-config}\\
+\path{get-log} & \texttt{POST} & \path{/general/mgmt/logs}\\
+\bottomrule\end{longtable}
+\section{Important delimitations}
+Development service profile, not complete Java behavioral equivalence. See system SysDD and HTTPS IDD for trust boundaries, DTO reference and restrictions.
+PASSWORD identities use bcrypt and single active opaque sessions. Java SQL/session import, complete query/time normalization and alternative framework transports require further work. No stored plaintext password or raw identity token is used.
+\end{document}

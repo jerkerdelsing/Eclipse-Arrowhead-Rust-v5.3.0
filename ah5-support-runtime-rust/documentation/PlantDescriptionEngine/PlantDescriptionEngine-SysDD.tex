@@ -1,0 +1,73 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\tabcolsep}{3pt}
+\begin{document}
+\ArrowheadTitle{PlantDescriptionEngine (Rust)}
+\ArrowheadType{System Design Description}
+\ArrowheadTypeShort{Rust}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-23}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- Rust support development port}
+\ArrowheadSetup
+\section{PlantDescriptionEngine}
+\subsection{System overview}
+Native Rust development profile for local Java source \path{PlantDescriptionEngine/}. One independently configured executable, identity, port and state file per role. No Java, Go or Python process implements the service. Some essential operations are explicitly unavailable.
+\subsection{Design and trust boundaries}
+Tokio/Hyper/Axum with rustls enforces mutual TLS. Certificate chain, validity, local CN/profile and startup-configured optional CRLs are checked. Configured CRLs and TLS material reload without process restart; verification fails closed when required material is unavailable. Tokens are verified with Authentication and bound to the TLS identity. Business calls require ConsumerAuthorization; management requires a verified sysop or explicit broad whitelist. CA provisioning instead applies Java-style named certificate-principal rights. Outbound authorities are pinned to expected CN/profile before credentials are sent, in addition to chain, SAN and time validation.
+\subsection{Persistent state}
+Independent locked atomic JSON replaces SQL. Clone/validate/fsync/rename commits prevent partially published local transactions. Rename is the commit point; directory-sync failure is an uncertain durable commit, not a rollback. Owner-only keys/password files are separate. Network effects are not distributed transactions; interrupted starts and bridge operations require reconciliation. No automatic Java state import, clustering or deployment is delivered.
+\subsection{Implemented behavior}
+Topology CRUD/include composition, named/metadata matching, periodic registration/mismatch alarms, atomic DSO snapshot synchronization, alarm acknowledgment
+\subsection{Open release gates}
+Monitoring-staleness alarms, full Java DTO normalization/state import and production qualification. All systems remain development profiles, not certified interchangeable Java replacements. See \path{COMPATIBILITY.md} for detailed DTO fields and restrictions; the Java sources remain the authoritative contract.
+\subsection{Produced and consumed services}
+Advertised implemented HTTPS definitions: \path{echo}, \allowbreak \path{generalManagement}, \allowbreak \path{plantDescriptionManagement}, \allowbreak \path{plantDescriptionMonitor}.\par
+Authorities consumed as applicable: Authentication, ServiceRegistry, ConsumerAuthorization and explicitly configured pinned adapter/provider origins. Only implemented operations are registered. Service versions are 1.0.0 except Gatekeeper/GateTunnel 5.2.2. Optional native AMQP monitoring publishes echo, power and status observations.
+\subsection{HTTPS operations}
+JSON unless raw configuration bytes, PEM CRL or echo text. Bodies: 1 MiB; remote responses: 8 MiB. Header: \texttt{Bearer IDENTITY-TOKEN//token}. Unknown routes return 404, absent dependencies 503. Unported operations return 501 after applicable access checks and are excluded from registration. Route presence is not semantic parity.
+\begin{longtable}{p{0.09\textwidth}p{0.59\textwidth}p{0.20\textwidth}}\toprule
+Method & Path & Access / status\\\midrule\endhead
+\texttt{GET} & \path{/plantdescriptionengine/general/mgmt/get-config} & management\\
+\texttt{POST} & \path{/plantdescriptionengine/general/mgmt/logs} & management\\
+\texttt{GET} & \path{/plantdescriptionengine/monitor/echo} & certificate\\
+\texttt{GET} & \path{/plantdescriptionengine/mgmt/sync-status} & management\\
+\texttt{GET} & \path{/plantdescriptionengine/mgmt/plant-descriptions} & management\\
+\texttt{POST} & \path{/plantdescriptionengine/mgmt/plant-descriptions} & management\\
+\texttt{GET} & \path{/plantdescriptionengine/mgmt/plant-descriptions/{id}} & management\\
+\texttt{PUT} & \path{/plantdescriptionengine/mgmt/plant-descriptions/{id}} & management\\
+\texttt{PATCH} & \path{/plantdescriptionengine/mgmt/plant-descriptions/{id}} & management\\
+\texttt{DELETE} & \path{/plantdescriptionengine/mgmt/plant-descriptions/{id}} & management\\
+\texttt{GET} & \path{/plantdescriptionengine/monitor/plant-descriptions} & identity\\
+\texttt{GET} & \path{/plantdescriptionengine/monitor/plant-descriptions/{id}} & identity\\
+\texttt{GET} & \path{/plantdescriptionengine/monitor/alarms} & identity\\
+\texttt{GET} & \path{/plantdescriptionengine/monitor/alarms/{id}} & identity\\
+\texttt{PATCH} & \path{/plantdescriptionengine/monitor/alarms/{id}} & identity\\
+\bottomrule\end{longtable}
+Error envelope: errorMessage, errorCode, exceptionType, origin and timestamp. Full Java status, DTO and validation equivalence requires differential testing.
+\section{References and qualification}
+See \path{contracts.json} for local Java SHA256 hashes/mappings, \path{COMPATIBILITY.md} for DTO details and gaps, and \path{VERIFICATION.md} for tests actually run. No upstream release-tag provenance, complete replacement or real-cloud interoperability is asserted.
+\section{PDE and DSO snapshot extension (23 October 2026)}
+The local Java, Go and native Rust implementations provide the same HTTPS snapshot contract. The registered service is \texttt{serviceOrchestrationPlantManagement}, version 1.0.0. The API is a local extension to the upstream framework.
+\begin{longtable}{p{0.12\textwidth}p{0.70\textwidth}}\toprule
+Method & Resource and operation\\\midrule\endhead
+POST & \path{/serviceorchestration/mgmt/plant-rules/query} (query)\\
+PUT & \path{/serviceorchestration/mgmt/plant-rules/replace} (replace)\\\bottomrule
+\end{longtable}
+Both operations return the complete snapshot. The request for replacement has \texttt{rules}, an array of scopes. Each scope contains \texttt{consumer}, \texttt{serviceDefinition}, and \texttt{providers}; each provider contains \texttt{serviceInstanceId} and integer \texttt{priority}. Priority zero is valid; lower values rank first. Duplicate scopes and provider IDs, null arrays, and invalid priorities are rejected before commit. Empty rules clear management; empty providers retain a managed but unavailable scope.
+\par\medskip
+PDE composes includes and resolves names/metadata against registered systems and instances. Named consumers remain managed when unregistered; missing or ambiguous producers retain empty scopes. Repeated provider IDs use the minimum priority. PDE queries before replacing and requires an equal acknowledgment. Failed reads do not clear rules. Registry query pages are bounded at 1000 entries. An incomplete response fails synchronization and preserves the last DSO snapshot. Changes reconcile normally within two seconds of a plant change and within thirty seconds of registry changes. \path{/plantdescriptionengine/mgmt/sync-status} exposes the loop state under management access.
+\par\medskip
+DSO restricts candidates to the scope, retains existing authorization, operation/interface and exclusivity checks, then ranks eligible providers. Matchmaking selects the lowest eligible priority. A denied or missing primary can use an engineered fallback. Unrelated providers and both inter-cloud flags cannot escape a managed scope. Unsupported existing translation/QoS features remain unsupported.
+\par\medskip
+Mutual TLS and certificate-bound identity tokens remain mandatory. Only PDE or Sysop can replace; PDE, LocalCloudManager or Sysop can query. PDE gains no general DSO administration right. ServiceRegistry reserves the new service definition for DSO. Native Rust permits PDE only the two required registry query operations. DSO's \texttt{plantRules.active} record is persisted by an atomic private JSON commit and survives restart. Existing native state files need no SQL migration. Java uses its separate table migration.
+\par\medskip
+The Go deployment script regenerates pinned runtime origins and installs scoped policies; the Rust script targets the native candidate. Both preserve state. Legacy SimpleStore rows remain independent and are not imported or automatically deleted. Coordinated rollback must restore PDE and its backend together. Current live evidence covers priority zero, fallback, unavailable producers, both inter-cloud guards, restart persistence with PDE stopped, and deactivation. This does not claim complete Java equivalence or production load qualification.
+
+\end{document}

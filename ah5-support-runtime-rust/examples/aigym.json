@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "aigym",
+  "advertisePort": 8478,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/AIGym.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8478",
+  "managementWhitelist": [],
+  "name": "AIGym",
+  "passwordFile": "secrets/AIGym.password",
+  "privateKey": "secrets/AIGym.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "aigym",
+  "state": "state/aigym.json",
+  "upstreams": {}
+}

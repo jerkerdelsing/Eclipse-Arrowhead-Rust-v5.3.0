@@ -1,0 +1,27 @@
+{
+  "advertiseAddress": "authentication",
+  "advertisePort": 8444,
+  "authenticationUrl": "https://authentication:8444",
+  "authorizationUrl": "https://consumerauthorization:8445",
+  "bootstrapIdentities": [
+    {
+      "passwordFile": "secrets/Sysop.password",
+      "sysop": true,
+      "systemName": "Sysop"
+    }
+  ],
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/Authentication.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "discoveryDirectAccess": [],
+  "listen": "127.0.0.1:8444",
+  "managementWhitelist": [],
+  "name": "Authentication",
+  "passwordFile": "secrets/Authentication.password",
+  "privateKey": "secrets/Authentication.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443",
+  "role": "authentication",
+  "state": "state/authentication.json",
+  "upstreams": {}
+}

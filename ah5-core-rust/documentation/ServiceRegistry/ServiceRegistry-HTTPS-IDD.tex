@@ -1,0 +1,57 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\begin{document}
+\ArrowheadTitle{ServiceRegistry HTTPS / Rust}
+\ArrowheadType{Interface Design Description}
+\ArrowheadTypeShort{IDD}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-16}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- native Rust core implementations}
+\ArrowheadSetup
+\section{Interface overview}
+Mandatory mutual TLS, Arrowhead token/certificate binding, JSON request and response documents. Echo responses, orchestration subscription IDs, authorization public keys and encryption IV responses are text. Certificate-only operations and management are distinguished in the table.
+\subsection{HTTPS interface operations}
+HTTPS uses JSON unless an operation specifies text. Request bodies are limited to 1 MiB; upstream responses to 8 MiB. Identity-token format: \texttt{Bearer IDENTITY-TOKEN//token}. Certificate-only identity operations still require verified mutual TLS and apply credential/certificate binding.
+\begin{longtable}{p{0.10\textwidth}p{0.65\textwidth}p{0.17\textwidth}}\toprule
+Method & Path & Access\\\midrule\endhead
+\texttt{GET} & \path{/serviceregistry/general/mgmt/get-config} & management\\
+\texttt{POST} & \path{/serviceregistry/general/mgmt/logs} & management\\
+\texttt{GET} & \path{/serviceregistry/monitor/echo} & certificate\\
+\texttt{POST} & \path{/serviceregistry/device-discovery/register} & identity\\
+\texttt{POST} & \path{/serviceregistry/device-discovery/lookup} & identity\\
+\texttt{DELETE} & \path{/serviceregistry/device-discovery/revoke/{name}} & identity\\
+\texttt{POST} & \path{/serviceregistry/system-discovery/register} & identity\\
+\texttt{POST} & \path{/serviceregistry/system-discovery/lookup} & identity\\
+\texttt{DELETE} & \path{/serviceregistry/system-discovery/revoke} & identity\\
+\texttt{POST} & \path{/serviceregistry/service-discovery/register} & identity\\
+\texttt{POST} & \path{/serviceregistry/service-discovery/lookup} & identity\\
+\texttt{DELETE} & \path{/serviceregistry/service-discovery/revoke/{instanceId}} & identity\\
+\texttt{POST} & \path{/serviceregistry/mgmt/devices/query} & management\\
+\texttt{POST} & \path{/serviceregistry/mgmt/devices} & management\\
+\texttt{DELETE} & \path{/serviceregistry/mgmt/devices} & management\\
+\texttt{PUT} & \path{/serviceregistry/mgmt/devices} & management\\
+\texttt{POST} & \path{/serviceregistry/mgmt/systems/query} & management\\
+\texttt{POST} & \path{/serviceregistry/mgmt/systems} & management\\
+\texttt{DELETE} & \path{/serviceregistry/mgmt/systems} & management\\
+\texttt{PUT} & \path{/serviceregistry/mgmt/systems} & management\\
+\texttt{POST} & \path{/serviceregistry/mgmt/service-definitions/query} & management\\
+\texttt{POST} & \path{/serviceregistry/mgmt/service-definitions} & management\\
+\texttt{DELETE} & \path{/serviceregistry/mgmt/service-definitions} & management\\
+\texttt{POST} & \path{/serviceregistry/mgmt/service-instances/query} & management\\
+\texttt{POST} & \path{/serviceregistry/mgmt/service-instances} & management\\
+\texttt{DELETE} & \path{/serviceregistry/mgmt/service-instances} & management\\
+\texttt{PUT} & \path{/serviceregistry/mgmt/service-instances} & management\\
+\texttt{POST} & \path{/serviceregistry/mgmt/interface-templates/query} & management\\
+\texttt{POST} & \path{/serviceregistry/mgmt/interface-templates} & management\\
+\texttt{DELETE} & \path{/serviceregistry/mgmt/interface-templates} & management\\
+\bottomrule\end{longtable}
+Errors contain errorMessage, errorCode, exceptionType, origin and timestamp. Exact validation/error parity and all Java security-policy settings remain release gates. Unknown routes return 404; unavailable authorities fail closed.
+\section{Limitations}
+Registry records, interface templates, expiry, cascades, authorized discovery and management are implemented. Java SQL import, the full property-validator catalogue, normalization, advanced version/time/address matching and all discovery-policy options need additional work. Unsupported custom validators fail explicitly; they are not silently accepted.\end{document}

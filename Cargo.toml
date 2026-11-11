@@ -1,0 +1,8 @@
+[workspace]
+resolver = "3"
+members = [
+    "ah5-messaging-rust",
+    "ah5-core-rust",
+    "ah5-support-runtime-rust",
+    "ah5-LocalCloudManager-rust",
+]

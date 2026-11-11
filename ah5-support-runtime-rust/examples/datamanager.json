@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "datamanager",
+  "advertisePort": 8461,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/DataManager.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8461",
+  "managementWhitelist": [],
+  "name": "DataManager",
+  "passwordFile": "secrets/DataManager.password",
+  "privateKey": "secrets/DataManager.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "datamanager",
+  "state": "state/datamanager.json",
+  "upstreams": {}
+}

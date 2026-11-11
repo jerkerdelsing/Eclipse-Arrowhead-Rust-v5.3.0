@@ -1,0 +1,21 @@
+{
+  "advertiseAddress": "serviceorchestration-dynamic",
+  "advertisePort": 8441,
+  "authenticationUrl": "https://authentication:8444",
+  "authorizationUrl": "https://consumerauthorization:8445",
+  "bootstrapIdentities": [],
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/DynamicServiceOrchestration.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "discoveryDirectAccess": [],
+  "listen": "127.0.0.1:8441",
+  "managementWhitelist": [],
+  "name": "DynamicServiceOrchestration",
+  "passwordFile": "secrets/DynamicServiceOrchestration.password",
+  "privateKey": "secrets/DynamicServiceOrchestration.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443",
+  "role": "serviceorchestration-dynamic",
+  "state": "state/serviceorchestration-dynamic.json",
+  "upstreams": {}
+}

@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "sysmonitor",
+  "advertisePort": 8475,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/SysMonitor.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8475",
+  "managementWhitelist": [],
+  "name": "SysMonitor",
+  "passwordFile": "secrets/SysMonitor.password",
+  "privateKey": "secrets/SysMonitor.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "sysmonitor",
+  "state": "state/sysmonitor.json",
+  "upstreams": {}
+}

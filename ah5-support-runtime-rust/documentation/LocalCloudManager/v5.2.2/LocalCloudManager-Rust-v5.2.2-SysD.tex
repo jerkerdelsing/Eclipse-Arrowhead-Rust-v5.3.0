@@ -1,0 +1,92 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl,enumitem}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\clubpenalty=10000\widowpenalty=10000
+\setlist{nosep,leftmargin=*}
+\begin{document}
+\ArrowheadTitle{LocalCloudManager / SysD}\ArrowheadType{System Description}\ArrowheadTypeShort{Rust}
+\ArrowheadVersion{5.2.2}\ArrowheadDate{2026-10-17}
+\ArrowheadAuthor{Eclipse Arrowhead migration project}\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Project maintainers}\ArrowheadFooter{Eclipse Arrowhead -- Rust LocalCloudManager -- EPL-2.0}
+\ArrowheadSetup
+\section{Rust LocalCloudManager}
+\par
+Canonical relocated source: \path|ah5-support-rust/LocalCloudManager|. Target system version5.2.2; associated services \path|localCloudManagement| and legacy \path|monitor|, both1.0.0. The latest located cloud/workspace manager sources matched SHA256 \path|c3150daa4dd91e854439e31626895c5ff86e77881c338c5281306bda49f44d6b| before relocation.
+\par
+This is a source/documentation relocation, not a Java-parity upgrade or secure deployment. The existing \path|Arrowhead-test-cloud-rust/core-systems| copy remains a deployment compatibility snapshot because other roles share its runtime and build context. No live source, cloud, container, key or state was removed or restarted. Develop against this canonical package instead of editing both copies independently.
+\par
+\subsection{Critical boundary}
+\par
+The inherited manager is a development HTTP adapter: no native inbound TLS, no configured mTLS provider identity and no native AMQP sysMonitor publisher. It sends/accepts legacy \path|Bearer SYSTEM//...| identities in its shared runtime. Those are not cryptographic authentication. Do not expose this package directly or assume it meets the newer Rust support runtime's certificate-authenticated contract. A TLS proxy alone does not correct legacy provider authentication. See COMPATIBILITY.md before use.
+\par
+The dedicated launcher defaults to \path|http://127.0.0.1:8480/| instead of the inherited all-interface bind. This is a packaging safeguard, not a complete security fix. Historical UI8590/API8580 mappings belong to cloud deployment forwarding and are not created here.
+\par
+\subsection{Build and source layout}
+\par
+\begin{lstlisting}[basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible]
+cargo build --locked --bin LocalCloudManager
+cargo test --locked
+cargo clippy --locked --all-targets -- -D warnings
+cargo run --locked --bin LocalCloudManager -- --help
+\end{lstlisting}
+\par
+This is an independent nested Cargo package, with its own Cargo.toml/lock and workspace boundary. Root Makefile build/test/check targets explicitly include it. Root \path|make localcloudmanager| builds it; \path|make localcloudmanager-docs| generates/compiles its documentation. The generic parent \path|arrowhead-support| launcher does not select this legacy manager profile.
+\par
+\path|src/main.rs| is the dedicated launcher, rejecting roles other than localcloudmanager without mutating process environment. \path|src/localcloudmanager.rs| retains the existing Axum console handlers and compile-time embedded HTML/CSS/JavaScript in \path|src/ui|. \path|api.rs|, \path|registry.rs| and \path|state.rs| are the inherited shared runtime dependencies; retaining them avoids a dependency on the old checkout. Other role implementations remain source dependencies and are not selected by this executable. No Java/Go/Node process implements the manager.
+\par
+Original manager business logic and UI are retained; deliberate packaging changes are the crate name/workspace boundary, library exports, role-default configuration helper, dedicated launcher and loopback default. Additional tests, documentation and source-provenance records are provided. The legacy \path|src/ui.html| remains an unused historical asset; active UI uses src/ui/index.html/app.js/styles.css.
+\par
+\clearpage
+\subsection{Configuration}
+\par
+\begin{longtable}{p{0.28\textwidth}p{0.64\textwidth}}\toprule
+Environment & Actual source behavior\\\midrule\endhead
+\path|ARROWHEAD_ROLE| & Omit or use localcloudmanager; other values rejected by dedicated launcher\\
+\path|SYSTEM_NAME|, \path|DOMAIN_NAME| & Default LocalCloudManager/localcloudmanager; used as declared identity/advertised address, not validated certificate identities\\
+\path|SERVER_PORT|, \path|LISTEN_ADDRESS| & Default8480 and loopback; explicit listen address can override it, but exposes inherited insecure transport\\
+\path|DATA_FILE| & Independent JSON state, default /data/state.json; use a private dedicated path, never existing active cloud state\\
+\path|SERVICE_REGISTRY_URL|, \path|AUTHENTICATION_URL| & Inherited HTTP defaults; HTTPS URLs alone do not provision a client certificate, expected-CN pin or identity-token login\\
+\path|DATAMANAGER_URL|, \path|SIMPLE_ORCHESTRATION_URL|, \path|SYSMONITOR_URL|, \path|PLANT_DESCRIPTION_ENGINE_URL| & Provider adapter bases; shapes must be qualified against actual deployed providers\\
+\path|MANAGEMENT_WHITELIST|, \path|TOKEN_SECRET| & Shared legacy runtime settings, not the console session boundary or proof of secure identity\\
+\path|CONSOLE_PASSWORD_HASH| & scrypt:base64salt:base64hash, N16384/r8/p1; salt>=16bytes/hash>=32bytes; missing or invalid value returns503for console APIs\\
+\path|CONSOLE_ALLOWED_HOSTS| & Host-name allowlist, default127.0.0.1,localhost,[::1]; ports are ignored\\
+\path|CONSOLE_SESSION_SECONDS| & Default28800; positive bounded values should be provisioned; inherited implementation lacks robust range validation\\
+\path|DOCKER_SOCKET|, \path|COMPOSE_PROJECT_NAME| & Unix Docker socket and project filter; static source allowlist controls lifecycle; MANAGED\_SERVICES is not used\\
+\bottomrule\end{longtable}
+\par
+Missing password fails closed for \path|/api/| but does not disable static assets, health or legacy Arrowhead routes. Sessions and history reset on restart. Keep this process in an isolated development environment with explicit trust boundaries.
+\par
+\subsection{Documentation and provenance}
+\par
+\path|../documentation/LocalCloudManager/v5.2.2/| contains SysD, SysDD, two SDs and two HTTP IDDs, plus a combined catalogue. No sysMonitor AMQP SD/IDD is fabricated for an unimplemented publisher. The revised SysML variability model in docs/LocalCloudManager.sysml records Java-cloud, Go and Rust variants and the actual Rust qualification boundary. Historical Markdown/SysML is preserved unchanged under docs/legacy, not endorsed as evidence of interchangeability.
+\par
+\begin{lstlisting}[basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible]
+make docs
+\end{lstlisting}
+\par
+Run from this module. The original source defaults to ../../Arrowhead-test-cloud-rust/core-systems for read-only source hashing; override REFERENCE when needed. \path|docs/source-manifest.json| records original and relocated hashes plus the route inventory. Read VERIFICATION.md for actual test/build evidence. The repository's original Arrowhead LaTeX class/logo is reused.
+\clearpage
+\section{Compatibility and inherited limits}
+\par
+This relocated module is not the parent Rust support runtime's native mTLS implementation. Packaging does not establish full Java equivalence or new security hardening.
+\par
+1. The listener is plain HTTP. The dedicated launcher now defaults to loopback, but explicit LISTEN\_ADDRESS may expose it. No native inbound TLS/mTLS certificate verification exists in this source.\par\medskip
+2. Provider calls use reqwest defaults and legacy \path|Bearer SYSTEM//LocalCloudManager|, not authenticated identity-token login or a configured client certificate. No expected provider-CN pinning, CRL policy or explicit request timeout/response-size limit is added. HTTPS URLs alone do not solve this. Legacy management routes trust declared SYSTEM names.\par\medskip
+3. \path|/api/sysmonitor/subscriptions/{provider}| PUT and DELETE only acknowledge updated=true after confirmation; neither forwards changes. Both methods return the same acknowledgement. This is not applied subscription configuration.\par\medskip
+4. Intercloud is a static unavailable/no-relay view. Consumers have empty authorized/orchestrated collections and TestCloud labels. Overview includes synthetic registration/naming state and placeholder collections; subscription intake.connected=true is not broker readiness.\par\medskip
+5. SysMonitor read failures are converted into empty data. Plant reads partly report provider failure, but all provider adapter paths/shapes still need current Java/Go/Rust interoperability testing. Plant PATCH is routed through a PUT forwarding handler. Plant POST currently returns200rather than201.\par\medskip
+6. Console cookie \path|ah_console| is HttpOnly/SameSite=Strict but lacks Secure and localhost-port isolation. Host/Origin checks compare names without exact origin-port matching. Sessions/history are process-global in-memory state. Scrypt executes under a mutex on an async handler; abuse/capacity hardening is outstanding.\par\medskip
+7. Invalid/missing password disables console APIs with503, but static UI/health and legacy interfaces remain accessible under their own weaker rules. A console session is not required for legacy declared-identity endpoints. Confirmation header is not cryptographic replay protection.\par\medskip
+8. Docker uses a raw Unix socket with project-filtered list and static lifecycle allowlist. Logs may read any project container, not just lifecycle-allowed services. MANAGED\_SERVICES is not consumed. Application checks do not constrain the daemon privilege conferred by the raw socket. Docker read/response parsing has no explicit timeout or size bound.\par\medskip
+9. No native sysMonitor AMQP publisher or service registration exists here. Historical monitor1.0.0 is echo only, not the canonical telemetry contract. No claim of AMQPS publication, broker confirms or real broker qualification is made.\par\medskip
+10. Registry metadata covers a subset of handler routes and advertises generic\_http/policy NONE. Registration retries every3seconds until first success, then stops; no ongoing refresh is implemented. Displayed registered=true is synthetic.\par\medskip
+11. Shared JSON state lacks a new process lock/fsync/encryption policy; corrupt JSON currently defaults to empty state. Do not open real deployment state with this package or use shared files between processes. No Java state migration is implemented.\par\medskip
+12. The shared runtime retains additional roles for source dependencies and inherited tests. Only LocalCloudManager is selected by the dedicated executable. Original deployment source is retained unchanged so other roles/build contexts are not broken.\par\medskip
+13. The revised SysML model describes intended variability, not proven substitution. Historical legacy docs claiming interchangeability are kept as provenance only. No SysML parser, full browser deployment suite, Java golden fixtures, vulnerability scan or production qualification is included.\par\medskip
+\par
+Moving source and creating documentation does not resolve these limits. Close them and qualify security, provider DTOs, rollback and runtime isolation before selecting this package for a working cloud.
+\section{References and qualification}
+See \path|docs/source-manifest.json| for original/relocated source SHA256 records, \path|VERIFICATION.md| for checks actually run, and \path|docs/LocalCloudManager.sysml| for the descriptive, unparsed variability model. No Java interchangeability, native TLS or sysMonitor publisher is claimed. Existing cloud source and running deployment remain unchanged.
+\end{document}

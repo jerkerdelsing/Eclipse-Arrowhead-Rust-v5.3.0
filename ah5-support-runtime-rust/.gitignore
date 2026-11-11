@@ -1,0 +1,8 @@
+/target/
+/tmp/
+/state/
+/secrets/
+*.aux
+*.log
+*.out
+*.toc

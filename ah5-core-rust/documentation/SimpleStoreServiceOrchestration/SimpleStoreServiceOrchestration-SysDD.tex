@@ -1,0 +1,52 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\begin{document}
+\ArrowheadTitle{SimpleStoreServiceOrchestration (Rust)}
+\ArrowheadType{System Design Description}
+\ArrowheadTypeShort{SysDD}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-16}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- native Rust core implementations}
+\ArrowheadSetup
+\section{SimpleStoreServiceOrchestration}
+\subsection{System overview}
+Native Rust implementation of the local Java module \path{serviceorchestration-simple/}. Each named executable checks its configured role and owns an independent identity, listen port and state file. Shared Rust modules implement the runtime; no Java, Python or Go process implements the service.
+\subsection{Produced and consumed services}
+Produced HTTPS definitions: \path{generalManagement}, \allowbreak \path{serviceOrchestration}, \allowbreak \path{serviceOrchestrationHistoryManagement}, \allowbreak \path{serviceOrchestrationPushManagement}, \allowbreak \path{serviceOrchestrationSimpleStoreManagement}. Service versions are 1.0.0; the target system version is 5.2.2. Authorities consumed as applicable are Authentication, ServiceRegistry and ConsumerAuthorization. Explicit pinned HTTPS origins and valid cloud identities must be provisioned.
+\subsection{Architecture and persistent state}
+The listener uses Tokio, Hyper/Axum and rustls with mandatory client certificates. Verified peer identity is supplied through a private request extension, never a declared-identity header. Business modules share locked JSON state with clone/validate/fsync/rename transactions. Credentials and keys are separate owner-only files. Cross-system operations and callbacks are not distributed transactions.
+\subsection{Security}
+Local cloud CN/profile, certificate chain and validity are verified. Identity tokens are checked against Authentication and bound to the client certificate. Management requires a verified sysop or explicit broad whitelist. Outbound peer chain/SAN and expected system CN/profile are checked before credentials are sent. Optional PEM CRLs are enforced at startup-configured trust boundaries and require process restart to reload. No plaintext HTTP listener, TLS bypass or declared SYSTEM identity mode is provided.
+\subsection{Implementation status and delimitations}
+This is a development profile, not a certified interchangeable Java replacement. HTTP route presence is not semantic equivalence. Java database migration, MQTT application APIs and production qualification remain outstanding.
+Stored candidate priority selection, preferred providers, matchmaking, history, subscriptions and explicit HTTPS push jobs are implemented. Store results intentionally retain Java's sparse result shape. Full Java query/priority-normalization semantics, event-driven reevaluation, MQTT callbacks and Java state import are not ported. Unsupported simple-store criteria are reported as ignored warnings.
+\section{Implementation structure}
+See \path{src/security.rs}, \path{src/store.rs}, \path{src/web.rs} and the role-specific module. Transactions clone state and publish only after durable rename. State locking prevents concurrent processes from sharing the same path. A directory-sync failure after rename is an uncertain durable commit, not an automatic rollback. HTTPS push callbacks are at-least-once across crash recovery; downstream effects can require reconciliation.
+\subsection{HTTPS interface operations}
+HTTPS uses JSON unless an operation specifies text. Request bodies are limited to 1 MiB; upstream responses to 8 MiB. Identity-token format: \texttt{Bearer IDENTITY-TOKEN//token}. Certificate-only identity operations still require verified mutual TLS and apply credential/certificate binding.
+\begin{longtable}{p{0.10\textwidth}p{0.65\textwidth}p{0.17\textwidth}}\toprule
+Method & Path & Access\\\midrule\endhead
+\texttt{GET} & \path{/serviceorchestration/general/mgmt/get-config} & management\\
+\texttt{POST} & \path{/serviceorchestration/general/mgmt/logs} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/pull} & identity\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/subscribe} & identity\\
+\texttt{DELETE} & \path{/serviceorchestration/orchestration/unsubscribe/{id}} & identity\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/push/subscribe} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/push/trigger} & management\\
+\texttt{DELETE} & \path{/serviceorchestration/orchestration/mgmt/push/unsubscribe} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/push/query} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/history/query} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/simple-store/create} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/simple-store/query} & management\\
+\texttt{PUT} & \path{/serviceorchestration/orchestration/mgmt/simple-store/modify-priorities} & management\\
+\texttt{DELETE} & \path{/serviceorchestration/orchestration/mgmt/simple-store/remove} & management\\
+\bottomrule\end{longtable}
+Errors contain errorMessage, errorCode, exceptionType, origin and timestamp. Exact validation/error parity and all Java security-policy settings remain release gates. Unknown routes return 404; unavailable authorities fail closed.
+\end{document}

@@ -1,0 +1,32 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\begin{document}
+\ArrowheadTitle{deviceDiscovery (Rust)}
+\ArrowheadType{Service Description}
+\ArrowheadTypeShort{SD}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-16}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- native Rust core implementations}
+\ArrowheadSetup
+\section{Service overview}
+Definition: \path{deviceDiscovery}.\par
+Service version: 1.0.0. Produced by: \path{ServiceRegistry}.\par
+Interface: \texttt{generic\_https}, policy \texttt{CERT\_AUTH}; the application additionally enforces identity/management/ownership rules. Base path: \path{/serviceregistry}.
+\section{Operations}
+\begin{longtable}{p{0.32\textwidth}p{0.12\textwidth}p{0.46\textwidth}}\toprule
+Operation & Method & Relative path\\\midrule\endhead
+\path{lookup} & \texttt{POST} & \path{/device-discovery/lookup}\\
+\path{register} & \texttt{POST} & \path{/device-discovery/register}\\
+\path{revoke} & \texttt{DELETE} & \path{/device-discovery/revoke/{name}}\\
+\bottomrule\end{longtable}
+\section{Important delimitations}
+Development service profile, not complete Java behavioral equivalence. See system SysDD and HTTPS IDD for trust boundaries, DTO reference and restrictions.
+Registry records, interface templates, expiry, cascades, authorized discovery and management are implemented. Java SQL import, the full property-validator catalogue, normalization, advanced version/time/address matching and all discovery-policy options need additional work. Unsupported custom validators fail explicitly; they are not silently accepted.
+\end{document}

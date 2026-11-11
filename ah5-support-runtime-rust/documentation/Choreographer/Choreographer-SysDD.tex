@@ -1,0 +1,62 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\begin{document}
+\ArrowheadTitle{Choreographer (Rust)}
+\ArrowheadType{System Design Description}
+\ArrowheadTypeShort{Rust}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-17}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- Rust support development port}
+\ArrowheadSetup
+\section{Choreographer}
+\subsection{System overview}
+Native Rust development profile for local Java source \path{Choreography/}. One independently configured executable, identity, port and state file per role. No Java, Go or Python process implements the service. Some essential operations are explicitly unavailable.
+\subsection{Design and trust boundaries}
+Tokio/Hyper/Axum with rustls enforces mutual TLS. Certificate chain, validity, local CN/profile and startup-configured optional CRLs are checked. CRLs need process restart to refresh; without CRLs no revocation enforcement is claimed. Tokens are verified with Authentication and bound to the TLS identity. Business calls require ConsumerAuthorization; management requires a verified sysop or explicit broad whitelist. CA provisioning instead applies Java-style named certificate-principal rights. Outbound authorities are pinned to expected CN/profile before credentials are sent, in addition to chain, SAN and time validation.
+\subsection{Persistent state}
+Independent locked atomic JSON replaces SQL. Clone/validate/fsync/rename commits prevent partially published local transactions. Rename is the commit point; directory-sync failure is an uncertain durable commit, not a rollback. Owner-only keys/password files are separate. Network effects are not distributed transactions; interrupted starts and bridge operations require reconciliation. No automatic Java state import, clustering or deployment is delivered.
+\subsection{Implemented behavior}
+Plan/executor CRUD, single local action/step starts, aborts and completion callbacks
+\subsection{Open release gates}
+Dependencies, parallel/multi-action execution, quantities, optimal selection, auto discovery, notifications, async orchestration, exact executor DTO parity. All systems remain development profiles, not certified interchangeable Java replacements. See \path{COMPATIBILITY.md} for detailed DTO fields and restrictions; the Java sources remain the authoritative contract.
+\subsection{Produced and consumed services}
+Advertised implemented HTTPS definitions: \path{choreographerExecutor}, \allowbreak \path{choreographerManagement}, \allowbreak \path{choreographerSession}, \allowbreak \path{echo}, \allowbreak \path{generalManagement}.\par
+Authorities consumed as applicable: Authentication, ServiceRegistry, ConsumerAuthorization and explicitly configured pinned adapter/provider origins. Only implemented operations are registered. Service versions are 1.0.0 except Gatekeeper/GateTunnel 5.2.2. No AMQP sysMonitor.observe implementation is advertised.
+\subsection{HTTPS operations}
+JSON unless raw configuration bytes, PEM CRL or echo text. Bodies: 1 MiB; remote responses: 8 MiB. Header: \texttt{Bearer IDENTITY-TOKEN//token}. Unknown routes return 404, absent dependencies 503. Unported operations return 501 after applicable access checks and are excluded from registration. Route presence is not semantic parity.
+\begin{longtable}{p{0.09\textwidth}p{0.59\textwidth}p{0.20\textwidth}}\toprule
+Method & Path & Access / status\\\midrule\endhead
+\texttt{GET} & \path{/choreographer/general/mgmt/get-config} & management\\
+\texttt{POST} & \path{/choreographer/general/mgmt/logs} & management\\
+\texttt{GET} & \path{/choreographer/monitor/echo} & certificate\\
+\texttt{POST} & \path{/choreographer/executor/register} & identity\\
+\texttt{DELETE} & \path{/choreographer/executor/unregister} & identity\\
+\texttt{POST} & \path{/choreographer/executor/notify-step-done} & identity\\
+\texttt{POST} & \path{/choreographer/session/start} & identity\\
+\texttt{DELETE} & \path{/choreographer/session/abort/{id}} & identity\\
+\texttt{POST} & \path{/choreographer/orchestration-result/{correlationId}} & identity / 501\\
+\texttt{GET} & \path{/choreographer/mgmt/plans} & management\\
+\texttt{POST} & \path{/choreographer/mgmt/plans} & management\\
+\texttt{GET} & \path{/choreographer/mgmt/plans/{id}} & management\\
+\texttt{DELETE} & \path{/choreographer/mgmt/plans/{id}} & management\\
+\texttt{GET} & \path{/choreographer/mgmt/plans/{id}/check} & management\\
+\texttt{POST} & \path{/choreographer/mgmt/sessions/start} & management\\
+\texttt{DELETE} & \path{/choreographer/mgmt/sessions/{id}} & management\\
+\texttt{GET} & \path{/choreographer/mgmt/sessions} & management\\
+\texttt{GET} & \path{/choreographer/mgmt/session-steps} & management\\
+\texttt{GET} & \path{/choreographer/mgmt/worklog} & management\\
+\texttt{GET} & \path{/choreographer/mgmt/executors} & management\\
+\texttt{POST} & \path{/choreographer/mgmt/executors} & management\\
+\texttt{GET} & \path{/choreographer/mgmt/executors/{id}} & management\\
+\texttt{DELETE} & \path{/choreographer/mgmt/executors/{id}} & management\\
+\bottomrule\end{longtable}
+Error envelope: errorMessage, errorCode, exceptionType, origin and timestamp. Full Java status, DTO and validation equivalence requires differential testing.
+\section{References and qualification}
+See \path{contracts.json} for local Java SHA256 hashes/mappings, \path{COMPATIBILITY.md} for DTO details and gaps, and \path{VERIFICATION.md} for tests actually run. No upstream release-tag provenance, complete replacement or real-cloud interoperability is asserted.\end{document}

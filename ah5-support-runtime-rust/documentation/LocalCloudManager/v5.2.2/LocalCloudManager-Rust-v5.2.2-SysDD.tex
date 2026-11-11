@@ -1,0 +1,69 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl,enumitem}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\clubpenalty=10000\widowpenalty=10000
+\setlist{nosep,leftmargin=*}
+\begin{document}
+\ArrowheadTitle{LocalCloudManager / SysDD}\ArrowheadType{System Design Description}\ArrowheadTypeShort{Rust}
+\ArrowheadVersion{5.2.2}\ArrowheadDate{2026-10-17}
+\ArrowheadAuthor{Eclipse Arrowhead migration project}\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Project maintainers}\ArrowheadFooter{Eclipse Arrowhead -- Rust LocalCloudManager -- EPL-2.0}
+\ArrowheadSetup
+\section{System design}
+\par
+\subsection{Components and boundaries}
+\par
+The standalone executable runs Tokio and Axum, with request-ID, trace and panic-catching layers. The shared Config/App/Store model remains local to this package. The manager UI is already embedded with include\_str; it needs no old checkout or Node server at runtime. Shared API, registration and state modules are retained so the package can build independently. The dedicated launcher rejects other ARROWHEAD\_ROLE values.
+\par
+The browser uses \path|/api/| console handlers. Host/Origin names and configured password are checked before session access. Session management is the exception to the authenticated-cookie requirement. Mutations additionally check \path|X-Arrowhead-Action: confirm|. Static assets and \path|/health| are not console-authenticated. Legacy Arrowhead routes are separate and accept declared SYSTEM identities through the inherited requester/manager path.
+\par
+Provider adapters use a default reqwest Client and the manager's declared SYSTEM name. There is no configured client certificate, identity-token login, expected-CN pinning or explicit per-request timeout. Transport is HTTP unless an HTTPS provider URL is supplied, and HTTPS does not provision mTLS. The listener itself is plain HTTP. This is not equivalent to the parent Rust support runtime's secure transport.
+\par
+\subsection{Collection and mutations}
+\par
+Overview queries registry systems/services and Docker containers concurrently, groups runtime state against known system names, and keeps the last60overview samples in memory. Several output collections/flags are placeholders; registration and naming booleans are not authoritative.
+\par
+DataManager is queried through the inherited data-historian system/service/data paths and flattened for the dashboard. Rules use simple-store query/create/remove; creation validates consumer, service instance and positive priority against an inferred interoperability catalogue before forwarding a candidates array. Provider DTOs must be qualified against the versions actually deployed.
+\par
+Plant creation/update/removal forwards to the inherited plant-description-engine path. PATCH currently forwards PUT, and create currently returns200. SysMonitor read errors are hidden behind empty arrays; subscription mutation acknowledges without forwarding. Intercloud is a static unavailable summary, not an active federation monitor.
+\par
+Docker control uses a hand-written HTTP-over-Unix-socket client, supporting chunked replies and multiplexed logs. Lists carry a Compose project-label filter. Lifecycle accepts only start/stop/restart and static allowlisted services. Logs can include any project container. The raw socket remains a daemon-privilege boundary; there is no new constrained proxy, response-size limit or timeout.
+\par
+\subsection{Registration, state and recovery}
+\par
+Registration retries every3seconds until one successful pass, then stops. It advertises localCloudManagement and legacy monitor1.0.0 over generic\_http with policy NONE. Handler session/plant/subscription mutation routes are not all represented in registration metadata. No sysMonitor AMQP service or publisher is present.
+\par
+Console sessions and history are process-global in-memory structures; restart loses them. Password verification uses scrypt under a mutex. Sessions expire on access; repeated failures cause a one-minute lockout. Cookie/Origin rules do not isolate localhost ports. Configure sensible session lifetimes because range validation remains incomplete.
+\par
+The shared JSON Store reads corrupt JSON as default empty state and writes through a temporary sibling/rename. It does not provide the newer parent support runtime's process-lock/fsync guarantees. Network mutations are not atomic with local state. Use an independent private state file; this package must never be pointed at active cloud state as a migration mechanism.
+\par
+\subsection{Variants and deployment}
+\par
+The revised SysML model distinguishes the Java-cloud Node.js adapter, native Go package and this Rust development package. It describes intended variability, not proven interchangeability. Original source remains in the cloud build context as an unchanged compatibility snapshot. This relocation does not rebuild/restart containers or create the historical UI8590/API8580 mappings.
+\par
+Before deployment, implement secure identities/transport, close no-op and placeholder behavior, qualify provider contracts and runtime privileges, and test rollback. A TLS proxy alone does not fix legacy provider authentication. See COMPATIBILITY.md for the full inherited limitation list and VERIFICATION.md for executed checks.
+\clearpage
+\section{Compatibility and inherited limits}
+\par
+This relocated module is not the parent Rust support runtime's native mTLS implementation. Packaging does not establish full Java equivalence or new security hardening.
+\par
+1. The listener is plain HTTP. The dedicated launcher now defaults to loopback, but explicit LISTEN\_ADDRESS may expose it. No native inbound TLS/mTLS certificate verification exists in this source.\par\medskip
+2. Provider calls use reqwest defaults and legacy \path|Bearer SYSTEM//LocalCloudManager|, not authenticated identity-token login or a configured client certificate. No expected provider-CN pinning, CRL policy or explicit request timeout/response-size limit is added. HTTPS URLs alone do not solve this. Legacy management routes trust declared SYSTEM names.\par\medskip
+3. \path|/api/sysmonitor/subscriptions/{provider}| PUT and DELETE only acknowledge updated=true after confirmation; neither forwards changes. Both methods return the same acknowledgement. This is not applied subscription configuration.\par\medskip
+4. Intercloud is a static unavailable/no-relay view. Consumers have empty authorized/orchestrated collections and TestCloud labels. Overview includes synthetic registration/naming state and placeholder collections; subscription intake.connected=true is not broker readiness.\par\medskip
+5. SysMonitor read failures are converted into empty data. Plant reads partly report provider failure, but all provider adapter paths/shapes still need current Java/Go/Rust interoperability testing. Plant PATCH is routed through a PUT forwarding handler. Plant POST currently returns200rather than201.\par\medskip
+6. Console cookie \path|ah_console| is HttpOnly/SameSite=Strict but lacks Secure and localhost-port isolation. Host/Origin checks compare names without exact origin-port matching. Sessions/history are process-global in-memory state. Scrypt executes under a mutex on an async handler; abuse/capacity hardening is outstanding.\par\medskip
+7. Invalid/missing password disables console APIs with503, but static UI/health and legacy interfaces remain accessible under their own weaker rules. A console session is not required for legacy declared-identity endpoints. Confirmation header is not cryptographic replay protection.\par\medskip
+8. Docker uses a raw Unix socket with project-filtered list and static lifecycle allowlist. Logs may read any project container, not just lifecycle-allowed services. MANAGED\_SERVICES is not consumed. Application checks do not constrain the daemon privilege conferred by the raw socket. Docker read/response parsing has no explicit timeout or size bound.\par\medskip
+9. No native sysMonitor AMQP publisher or service registration exists here. Historical monitor1.0.0 is echo only, not the canonical telemetry contract. No claim of AMQPS publication, broker confirms or real broker qualification is made.\par\medskip
+10. Registry metadata covers a subset of handler routes and advertises generic\_http/policy NONE. Registration retries every3seconds until first success, then stops; no ongoing refresh is implemented. Displayed registered=true is synthetic.\par\medskip
+11. Shared JSON state lacks a new process lock/fsync/encryption policy; corrupt JSON currently defaults to empty state. Do not open real deployment state with this package or use shared files between processes. No Java state migration is implemented.\par\medskip
+12. The shared runtime retains additional roles for source dependencies and inherited tests. Only LocalCloudManager is selected by the dedicated executable. Original deployment source is retained unchanged so other roles/build contexts are not broken.\par\medskip
+13. The revised SysML model describes intended variability, not proven substitution. Historical legacy docs claiming interchangeability are kept as provenance only. No SysML parser, full browser deployment suite, Java golden fixtures, vulnerability scan or production qualification is included.\par\medskip
+\par
+Moving source and creating documentation does not resolve these limits. Close them and qualify security, provider DTOs, rollback and runtime isolation before selecting this package for a working cloud.
+\section{References and qualification}
+See \path|docs/source-manifest.json| for original/relocated source SHA256 records, \path|VERIFICATION.md| for checks actually run, and \path|docs/LocalCloudManager.sysml| for the descriptive, unparsed variability model. No Java interchangeability, native TLS or sysMonitor publisher is claimed. Existing cloud source and running deployment remain unchanged.
+\end{document}

@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "eventhandler",
+  "advertisePort": 8455,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/EventHandler.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8455",
+  "managementWhitelist": [],
+  "name": "EventHandler",
+  "passwordFile": "secrets/EventHandler.password",
+  "privateKey": "secrets/EventHandler.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "eventhandler",
+  "state": "state/eventhandler.json",
+  "upstreams": {}
+}

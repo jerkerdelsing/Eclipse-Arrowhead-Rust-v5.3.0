@@ -1,0 +1,41 @@
+{
+  "interface": "generic_http",
+  "notice": "Canonical relocation; original deployment copy retained unchanged. HTTP/legacy identity profile, not native TLS or AMQP telemetry.",
+  "policy": "NONE",
+  "referenceRoot": "/Users/jerkerdelsing/Work/lule/EISLAB/Project/Eclipse/Arrowhead/Arrowhead-test-cloud-rust/core-systems",
+  "referenceSHA256": {
+    "../docs/LocalCloudManager.md": "079732e82307486e46dc6dc5b89f907ca76a739e53b73cdba928d3548ea10de1",
+    "../docs/LocalCloudManager.sysml": "3a6c63f3d699eb0e740fc2b4eb4714090b85a7e00bbdf92cd058dd757a4f64ff",
+    "Cargo.lock": "3764e983b9c06f7c81ace44543ff0f32678f3cec34029570ee8f8c10551bde69",
+    "Cargo.toml": "a11570c368038f09a3a71e8f62ea821deae2a2cf115870cf92635a6e3cc14b07",
+    "src/api.rs": "9e5437df14302229275fda3efbfef5a0e9be800e880e135d7d60872969d714de",
+    "src/localcloudmanager.rs": "c3150daa4dd91e854439e31626895c5ff86e77881c338c5281306bda49f44d6b",
+    "src/main.rs": "e5ba1376c0b213ce1763fbfb750239249f3fcc0a08837661f3d36f4aa527e584",
+    "src/registry.rs": "b5377e3bd9e2839ab2ae32eeaef95cc3587274ff240ab7bfa18199287683f392",
+    "src/state.rs": "90f3943a7a5eb647cbbdcadd03da7d2b39d48525f549c6903bf603fabde7dd59",
+    "src/ui.html": "73a4f873c2bc8d229424083f5c88a5d0580bda5bf19b2eac56f294949bdac021",
+    "src/ui/app.js": "3e6620f8f29c9cb2702b8595110587c393e7e8e2b72689db507c25c8019e80d9",
+    "src/ui/index.html": "73a4f873c2bc8d229424083f5c88a5d0580bda5bf19b2eac56f294949bdac021",
+    "src/ui/styles.css": "1a28c7e8a8262d51805b7c9f75d18f5a57e5dcf90f778f00d774748f0efa2575"
+  },
+  "relocatedSHA256": {
+    "Cargo.lock": "8fc329f15025d2647761a8d075c4e5ba10792207b079944b988e30b6387f9006",
+    "Cargo.toml": "50b78d142a010464c62d0c45a6898eccac46e6a55cb18941bda8d447a405f376",
+    "src/api.rs": "ecc7cc954b564c16602d911be41c1728d5f902a61acbb77c56e1e5819f628f1f",
+    "src/bin/documentation.rs": "3976f42e6a81f0d23135ba954c7aa8e8047fd1c858ba93964819972e1e8c92a3",
+    "src/lib.rs": "0e71994eebf6745271c77e1f1e3c9d12cb6726f710f3b8d8ae88f04615a1dfe4",
+    "src/localcloudmanager.rs": "89b3d11980aceca6bba401a2c78e017a68aece41f535377815e0011bd8da048f",
+    "src/main.rs": "d5e0a2275024f51612e4228a5b3348133d316af434b365a46cdc74460027c39c",
+    "src/registry.rs": "b5377e3bd9e2839ab2ae32eeaef95cc3587274ff240ab7bfa18199287683f392",
+    "src/state.rs": "90f3943a7a5eb647cbbdcadd03da7d2b39d48525f549c6903bf603fabde7dd59",
+    "src/ui.html": "73a4f873c2bc8d229424083f5c88a5d0580bda5bf19b2eac56f294949bdac021",
+    "src/ui/app.js": "3e6620f8f29c9cb2702b8595110587c393e7e8e2b72689db507c25c8019e80d9",
+    "src/ui/index.html": "73a4f873c2bc8d229424083f5c88a5d0580bda5bf19b2eac56f294949bdac021",
+    "src/ui/styles.css": "1a28c7e8a8262d51805b7c9f75d18f5a57e5dcf90f778f00d774748f0efa2575",
+    "tests/launcher.rs": "e887e0b3e1848bca4257b88a897c179118549447f610623be65263c57fbbbaa2"
+  },
+  "services": [
+    "localCloudManagement",
+    "monitor"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "plantdescriptionengine",
+  "advertisePort": 8432,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/PlantDescriptionEngine.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8432",
+  "managementWhitelist": [],
+  "name": "PlantDescriptionEngine",
+  "passwordFile": "secrets/PlantDescriptionEngine.password",
+  "privateKey": "secrets/PlantDescriptionEngine.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "plantdescriptionengine",
+  "state": "state/plantdescriptionengine.json",
+  "upstreams": {}
+}

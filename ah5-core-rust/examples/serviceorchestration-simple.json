@@ -1,0 +1,21 @@
+{
+  "advertiseAddress": "serviceorchestration-simple",
+  "advertisePort": 8442,
+  "authenticationUrl": "https://authentication:8444",
+  "authorizationUrl": "https://consumerauthorization:8445",
+  "bootstrapIdentities": [],
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/SimpleStoreServiceOrchestration.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "discoveryDirectAccess": [],
+  "listen": "127.0.0.1:8442",
+  "managementWhitelist": [],
+  "name": "SimpleStoreServiceOrchestration",
+  "passwordFile": "secrets/SimpleStoreServiceOrchestration.password",
+  "privateKey": "secrets/SimpleStoreServiceOrchestration.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443",
+  "role": "serviceorchestration-simple",
+  "state": "state/serviceorchestration-simple.json",
+  "upstreams": {}
+}

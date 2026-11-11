@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "onboarding",
+  "advertisePort": 8435,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/Onboarding.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8435",
+  "managementWhitelist": [],
+  "name": "Onboarding",
+  "passwordFile": "secrets/Onboarding.password",
+  "privateKey": "secrets/Onboarding.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "onboarding",
+  "state": "state/onboarding.json",
+  "upstreams": {}
+}

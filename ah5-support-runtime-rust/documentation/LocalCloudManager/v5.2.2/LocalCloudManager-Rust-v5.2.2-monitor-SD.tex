@@ -1,0 +1,25 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl,enumitem}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\clubpenalty=10000\widowpenalty=10000
+\setlist{nosep,leftmargin=*}
+\begin{document}
+\ArrowheadTitle{LocalCloudManager / monitor-SD}\ArrowheadType{Service Description}\ArrowheadTypeShort{Rust}
+\ArrowheadVersion{1.0.0}\ArrowheadDate{2026-10-17}
+\ArrowheadAuthor{Eclipse Arrowhead migration project}\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Project maintainers}\ArrowheadFooter{Eclipse Arrowhead -- Rust LocalCloudManager -- EPL-2.0}
+\ArrowheadSetup
+\section{Legacy monitor service}
+\par
+Definition \path|monitor|, version1.0.0, producer LocalCloudManager, base \path|/localcloud/monitor|, operation echo. This historical registration name is retained by source relocation; it is not the canonical sysMonitor telemetry contract or a recommendation for new services.
+\par
+\subsection{Semantics}
+\par
+A valid legacy requester receives text \path|Got it!|. This proves only that the echo handler responded, not provider readiness, registration, federation or broker connectivity. The inherited requester accepts a declared \path|Bearer SYSTEM//name| without cryptographic proof.
+\par
+No native sysMonitor AMQP publisher exists in this package. The dashboard can read SysMonitor data from a provider, but consuming monitoring data does not make this manager a telemetry publisher.
+\section{References and qualification}
+See \path|docs/source-manifest.json| for original/relocated source SHA256 records, \path|VERIFICATION.md| for checks actually run, and \path|docs/LocalCloudManager.sysml| for the descriptive, unparsed variability model. No Java interchangeability, native TLS or sysMonitor publisher is claimed. Existing cloud source and running deployment remain unchanged.
+\end{document}

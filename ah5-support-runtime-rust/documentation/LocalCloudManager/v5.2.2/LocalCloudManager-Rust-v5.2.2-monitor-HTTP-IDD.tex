@@ -1,0 +1,23 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl,enumitem}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\clubpenalty=10000\widowpenalty=10000
+\setlist{nosep,leftmargin=*}
+\begin{document}
+\ArrowheadTitle{LocalCloudManager / monitor-HTTP-IDD}\ArrowheadType{Interface Design Description}\ArrowheadTypeShort{Rust}
+\ArrowheadVersion{1.0.0}\ArrowheadDate{2026-10-17}
+\ArrowheadAuthor{Eclipse Arrowhead migration project}\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Project maintainers}\ArrowheadFooter{Eclipse Arrowhead -- Rust LocalCloudManager -- EPL-2.0}
+\ArrowheadSetup
+\section{Legacy monitor HTTP interface}
+\par
+Request \path|GET /localcloud/monitor/echo|, no body. Response200text \path|Got it!|. The source's legacy requester accepts \path|Authorization: Bearer SYSTEM//name| as a declared name; alternative bearer handling is inherited and does not establish certificate-bound authentication. No native TLS client certificate is required by this listener. Invalid or absent legacy requester yields401.
+\par
+This route is separate from \path|/api/| console-cookie middleware. Console cookies do not protect or replace the legacy requester check. An echo response is not evidence of registry publication, trusted identities, provider health, AMQP publishing or production suitability.
+\par
+The source registers monitor1.0.0 at \path|/localcloud/monitor| with GET/echo, generic\_http/policy NONE. No sysMonitor AMQP binding exists in this implementation; do not infer one from the dashboard's SysMonitor view or invent an associated telemetry contract.
+\section{References and qualification}
+See \path|docs/source-manifest.json| for original/relocated source SHA256 records, \path|VERIFICATION.md| for checks actually run, and \path|docs/LocalCloudManager.sysml| for the descriptive, unparsed variability model. No Java interchangeability, native TLS or sysMonitor publisher is claimed. Existing cloud source and running deployment remain unchanged.
+\end{document}

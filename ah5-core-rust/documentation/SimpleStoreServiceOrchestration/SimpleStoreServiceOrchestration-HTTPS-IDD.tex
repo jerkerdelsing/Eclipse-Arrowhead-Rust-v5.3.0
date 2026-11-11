@@ -1,0 +1,41 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\begin{document}
+\ArrowheadTitle{SimpleStoreServiceOrchestration HTTPS / Rust}
+\ArrowheadType{Interface Design Description}
+\ArrowheadTypeShort{IDD}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-16}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- native Rust core implementations}
+\ArrowheadSetup
+\section{Interface overview}
+Mandatory mutual TLS, Arrowhead token/certificate binding, JSON request and response documents. Echo responses, orchestration subscription IDs, authorization public keys and encryption IV responses are text. Certificate-only operations and management are distinguished in the table.
+\subsection{HTTPS interface operations}
+HTTPS uses JSON unless an operation specifies text. Request bodies are limited to 1 MiB; upstream responses to 8 MiB. Identity-token format: \texttt{Bearer IDENTITY-TOKEN//token}. Certificate-only identity operations still require verified mutual TLS and apply credential/certificate binding.
+\begin{longtable}{p{0.10\textwidth}p{0.65\textwidth}p{0.17\textwidth}}\toprule
+Method & Path & Access\\\midrule\endhead
+\texttt{GET} & \path{/serviceorchestration/general/mgmt/get-config} & management\\
+\texttt{POST} & \path{/serviceorchestration/general/mgmt/logs} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/pull} & identity\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/subscribe} & identity\\
+\texttt{DELETE} & \path{/serviceorchestration/orchestration/unsubscribe/{id}} & identity\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/push/subscribe} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/push/trigger} & management\\
+\texttt{DELETE} & \path{/serviceorchestration/orchestration/mgmt/push/unsubscribe} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/push/query} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/history/query} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/simple-store/create} & management\\
+\texttt{POST} & \path{/serviceorchestration/orchestration/mgmt/simple-store/query} & management\\
+\texttt{PUT} & \path{/serviceorchestration/orchestration/mgmt/simple-store/modify-priorities} & management\\
+\texttt{DELETE} & \path{/serviceorchestration/orchestration/mgmt/simple-store/remove} & management\\
+\bottomrule\end{longtable}
+Errors contain errorMessage, errorCode, exceptionType, origin and timestamp. Exact validation/error parity and all Java security-policy settings remain release gates. Unknown routes return 404; unavailable authorities fail closed.
+\section{Limitations}
+Stored candidate priority selection, preferred providers, matchmaking, history, subscriptions and explicit HTTPS push jobs are implemented. Store results intentionally retain Java's sparse result shape. Full Java query/priority-normalization semantics, event-driven reevaluation, MQTT callbacks and Java state import are not ported. Unsupported simple-store criteria are reported as ignored warnings.\end{document}

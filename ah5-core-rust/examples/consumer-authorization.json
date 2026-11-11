@@ -1,0 +1,26 @@
+{
+  "advertiseAddress": "consumer-authorization",
+  "advertisePort": 8445,
+  "authenticationUrl": "https://authentication:8444",
+  "authorizationUrl": "https://consumerauthorization:8445",
+  "bootstrapIdentities": [],
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/ConsumerAuthorization.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "discoveryDirectAccess": [],
+  "listen": "127.0.0.1:8445",
+  "managementWhitelist": [
+    "ServiceRegistry",
+    "DynamicServiceOrchestration",
+    "SimpleStoreServiceOrchestration"
+  ],
+  "name": "ConsumerAuthorization",
+  "passwordFile": "secrets/ConsumerAuthorization.password",
+  "privateKey": "secrets/ConsumerAuthorization.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443",
+  "role": "consumer-authorization",
+  "state": "state/consumer-authorization.json",
+  "tokenSecretFile": "secrets/authorization-token-secret.bin",
+  "upstreams": {}
+}

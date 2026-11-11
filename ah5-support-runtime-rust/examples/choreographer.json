@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "choreographer",
+  "advertisePort": 8457,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/Choreographer.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8457",
+  "managementWhitelist": [],
+  "name": "Choreographer",
+  "passwordFile": "secrets/Choreographer.password",
+  "privateKey": "secrets/Choreographer.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "choreographer",
+  "state": "state/choreographer.json",
+  "upstreams": {}
+}

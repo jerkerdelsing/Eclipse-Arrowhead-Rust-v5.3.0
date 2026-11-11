@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "blacklist",
+  "advertisePort": 8464,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/Blacklist.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8464",
+  "managementWhitelist": [],
+  "name": "Blacklist",
+  "passwordFile": "secrets/Blacklist.password",
+  "privateKey": "secrets/Blacklist.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "blacklist",
+  "state": "state/blacklist.json",
+  "upstreams": {}
+}

@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "gatekeeper",
+  "advertisePort": 8449,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/Gatekeeper.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8449",
+  "managementWhitelist": [],
+  "name": "Gatekeeper",
+  "passwordFile": "secrets/Gatekeeper.password",
+  "privateKey": "secrets/Gatekeeper.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "gatekeeper",
+  "state": "state/gatekeeper.json",
+  "upstreams": {}
+}

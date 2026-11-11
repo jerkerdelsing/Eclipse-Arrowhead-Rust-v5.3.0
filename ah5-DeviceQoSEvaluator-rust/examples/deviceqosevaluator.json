@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "deviceqosevaluator",
+  "advertisePort": 8472,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/DeviceQoSEvaluator.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8472",
+  "managementWhitelist": [],
+  "name": "DeviceQoSEvaluator",
+  "passwordFile": "secrets/DeviceQoSEvaluator.password",
+  "privateKey": "secrets/DeviceQoSEvaluator.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "deviceqosevaluator",
+  "state": "state/deviceqosevaluator.json",
+  "upstreams": {}
+}

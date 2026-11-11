@@ -1,0 +1,33 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl,enumitem}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\clubpenalty=10000\widowpenalty=10000
+\setlist{nosep,leftmargin=*}
+\usepackage{xurl}
+\begin{document}
+\ArrowheadTitle{LocalCloudManager / monitor-SD}\ArrowheadType{Service Description}\ArrowheadTypeShort{Rust}
+\ArrowheadVersion{5.3.0}\ArrowheadDate{2026-11-09}
+\ArrowheadAuthor{Eclipse Arrowhead migration project}\ArrowheadStatus{REVIEW DRAFT}
+\ArrowheadContact{Project maintainers}\ArrowheadFooter{Eclipse Arrowhead -- Rust LocalCloudManager -- EPL-2.0}
+\ArrowheadSetup
+\section{Documentation edition and implementation scope}
+This is the 5.3.0 documentation edition, dated 2026-11-09. It carries forward the system and service contracts from the retained 5.2.2 documentation and identifies the current primary implementation sources. The former \path|documentation/v5.2.2| folder is retained unchanged.
+
+Document version 5.3.0 is distinct from executable, dependency, registered system/service and wire-contract versions. Values still defined by the source (including 5.2.2 artefact versions, 1.0.0 service versions and \path|SysMonitor-AMQP-IDD-5.2.2| payload identifiers) are preserved. This documentation update does not change runtime behaviour or establish a new implementation release. Historical verification statements describe the tests recorded in the inherited baseline; this revision validates document compilation and references.
+
+\section{Legacy monitor service}
+\par
+Definition \path|monitor|, version1.0.0, producer LocalCloudManager, base \path|/localcloud/monitor|, operation echo. This historical registration name is retained by source relocation; it is not the canonical sysMonitor telemetry contract or a recommendation for new services.
+\par
+\subsection{Semantics}
+\par
+A valid legacy requester receives text \path|Got it!|. This proves only that the echo handler responded, not provider readiness, registration, federation or broker connectivity. The inherited requester accepts a declared \path|Bearer SYSTEM//name| without cryptographic proof.
+\par
+No native sysMonitor AMQP publisher exists in this package. The dashboard can read SysMonitor data from a provider, but consuming monitoring data does not make this manager a telemetry publisher.
+\section{References and qualification}
+See \path|docs/source-manifest.json| for original/relocated source SHA256 records, \path|VERIFICATION.md| for checks actually run, and \path|docs/LocalCloudManager.sysml| for the descriptive, unparsed variability model. No Java interchangeability, native TLS or sysMonitor publisher is claimed. Existing cloud source and running deployment remain unchanged.
+\section{Revision record}
+2026-11-09: Documentation edition 5.3.0 derived from the retained 5.2.2 sources; metadata and local references updated. Runtime and wire-contract versions remain source-defined.
+\end{document}

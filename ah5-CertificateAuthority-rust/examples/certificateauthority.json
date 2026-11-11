@@ -1,0 +1,21 @@
+{
+  "advertiseAddress": "certificateauthority",
+  "advertisePort": 8448,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "caCertificate": "secrets/cloud-ca.pem",
+  "caSigningKey": "secrets/cloud-ca.key",
+  "certificate": "secrets/CertificateAuthority.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8448",
+  "managementWhitelist": [],
+  "name": "CertificateAuthority",
+  "passwordFile": "secrets/CertificateAuthority.password",
+  "privateKey": "secrets/CertificateAuthority.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "certificateauthority",
+  "state": "state/certificateauthority.json",
+  "upstreams": {}
+}

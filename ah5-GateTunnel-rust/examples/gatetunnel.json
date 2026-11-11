@@ -1,0 +1,19 @@
+{
+  "advertiseAddress": "gatetunnel",
+  "advertisePort": 8453,
+  "authenticationUrl": "https://authentication:8444/",
+  "authorizationUrl": "https://consumerauthorization:8445/",
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/GateTunnel.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "listen": "127.0.0.1:8453",
+  "managementWhitelist": [],
+  "name": "GateTunnel",
+  "passwordFile": "secrets/GateTunnel.password",
+  "privateKey": "secrets/GateTunnel.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443/",
+  "role": "gatetunnel",
+  "state": "state/gatetunnel.json",
+  "upstreams": {}
+}

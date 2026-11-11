@@ -1,0 +1,10 @@
+/target/
+/bin/
+/state/
+/secrets/
+/config.json
+/tmp/
+*.aux
+*.log
+*.out
+*.toc

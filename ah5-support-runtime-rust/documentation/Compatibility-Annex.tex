@@ -1,0 +1,37 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\begin{document}
+\ArrowheadTitle{Rust support compatibility and contracts}
+\ArrowheadType{Design compatibility annex}
+\ArrowheadTypeShort{Rust}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-17}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- Rust support development port}
+\ArrowheadSetup
+\section{Compatibility and release gates}
+Target: the local modified Arrowhead support Java tree, nominal version 5.2.2. No upstream release-tag provenance is asserted. This is a native Rust development port, not a complete interchangeable Java replacement. No live cloud is changed. The active scope is 15 profiles; \path|_superseeded|, generated output and shared JavaSupportRuntime are not additional systems. AIGym is a local extension.\par
+Route presence is not semantic coverage. \path|documentation/contracts.json| records each route's \path|implemented| flag. Unported operations are excluded from service registration. Even implemented operations can have the restrictions above. Optional CRLs are startup-loaded and need process restart to reload. Without CRLs certificate revocation is not enforced by the TLS listener.\par
+All profiles use separate locked atomic JSON state rather than Java SQL. No automatic data migration, clustering, backup policy, resource-scale qualification, production certification or Java golden differential suite is delivered. A rename followed by directory-sync failure is an uncertain durable commit, not a rollback. Remote effects are not distributed transactions. Interrupted translation/start state must be reconciled manually. The broad management whitelist is an explicit trust grant, not a fine-grained policy.\par
+\subsection{Contract details}
+Blacklist create uses \path|entities[{systemName,expiresAt,reason}]|; queries \path|pagination,systemNames,mode,issuers,revokers,reason,alivesAt|; check is a boolean; query is \path|count/entries|; remove uses \path|names| query values.\par
+Configuration store uses \path|systemName,fileName,contentType,data| (base64); response adds \path|id,size,createdAt,updatedAt|; list is \path|count/data|; raw response uses stored MIME type. Owner checks apply to non-management APIs.\par
+Historian PUT is a SenML array; accepted records require one \path|v/vs/vb/vd/s| value. GET supports numeric epoch \path|from,to,count,signals|. Filtered output reinserts \path|bn/bt| context. Unsupported base-value/sum semantics and \path|signalCount| return501. Proxy uses registry operation metadata and explicit pinned provider origins.\par
+Time returns \path|epoch,epochMs,tz,dst,trusted,offsetMs,timeSource,lastCheckTime|; source is explicitly \path|system-clock-unverified|.\par
+AIGym samples use \path|model,features,target|; predictions \path|model,features,neighbours|. Missing coordinates are zero; default model is \path|default|, k defaults3 and clamps to available samples.\par
+Event subscription: \path|eventType,notifyUri,matchMetadata,metadataFilter,startsAt,expiresAt|; publish: \path|eventType,payload| (string), \path|metadata,timestamp|; notification includes \path|sourceSystemName|; accept response \path|matchedSubscriptions,acceptedDeliveries|. Three attempts; an in-flight callback may race unsubscribe. Callbacks can return an empty body; nonempty replies currently need valid JSON.\par
+QoS request: \path|providers,configuration{metricNames,metricWeights,timeWindow,threshold}|; lower weighted scores rank first, missing metrics rank last/drop. Measurement adapter returns \path|systemName,metricGroup,timestamp,current|.\par
+Plant documents: \path|plantDescription,active,include| numeric IDs, \path|systems[{systemId,systemName,ports}]|, \path|connections[{consumer:{systemId,portName},producer:{...}}]|. Only one active; cycles/dangling ports rejected. Alarm PATCH uses \path|acknowledged| boolean.\par
+Choreography plans use \path|name,firstActionName,actions|; actions \path|name,nextActionName,firstStepNames,steps|; steps \path|name,quantity,serviceRequirement,staticParameters,nextStepNames|. Only one action/step profile executes. Executor uses \path|systemName,address,port,basePath,serviceDefinitionName|; callbacks require matching \path|sessionId,sessionStepId,status| from recorded executor. Starts use \path|planName| or numeric \path|planId|.\par
+CA sign: \path|encodedCSR|/\path|csr| PEM or base64DER, \path|profile| on/de/sy/op, explicit \path|addresses|, optional RFC3339 \path|validAfter,validBefore|; chain base64DER, decimal serial, numeric id and long profile names returned. CA-private-key permissions owner-only. CSR signature checked; CN local PascalCase; reserved names Sysop-only. Provisioning rights match named Java principals. CRL PEM endpoint uses \path|application/pkix-crl|.\par
+SysMonitor subscription writes require \path|If-Match: "0"| for create or current revision, stale409, missing428; response ETag. Diagnostic management-only intake uses \path|routingKey,observation|. Routing \path|cloud.sysmonitor.provider.instance.type|; schema major1/value/UTC-Z sourceTime required; payload identities must match. Durable outbox topic \path|arrowhead/<cloud>/sysmonitor/data/<type>/<provider>| remains pending without broker workers. Java's \path|sysMonitor.observe| AMQP service is not advertised as implemented.\par
+Onboarding approval uses SHA256 DER \path|bootstrapFingerprint| (hex/optional colons), unique approved \path|systems|; reserved names denied. Only approval administration currently supported.\par
+Translation discovery adapter returns \path|candidates|; negotiation requires matching \path|bridgeId,bridgeInterface|; native records progress through DISCOVERED/NEGOTIATING/ACTIVE/ABORTING/ABORTED/ERROR. Uncertain side effects do not silently reset state.\par
+Federation/tunnel control interfaces are listed to expose the gap, not registered as working. No backend Go/Java process or dummy successful tunnel is used.\par
+\end{document}

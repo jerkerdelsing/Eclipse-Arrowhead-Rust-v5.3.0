@@ -1,0 +1,17 @@
+[package]
+name = "arrowhead-messaging-rust"
+version = "5.2.2"
+edition = "2024"
+license = "EPL-2.0"
+
+[dependencies]
+async-trait = "0.1"
+amqprs = { version = "2.1.5", features = ["tls"] }
+rumqttc = { package = "rumqttc-v5-next", version = "0.34.0", default-features = false, features = ["use-rustls-no-provider"] }
+rustls = { version = "0.23.46", default-features = false, features = ["ring", "std", "tls12"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "time", "sync"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12"] }
+uuid = { version = "1", features = ["v4"] }
+

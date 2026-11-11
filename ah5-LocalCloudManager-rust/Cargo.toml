@@ -1,0 +1,48 @@
+[package]
+name = "arrowhead-localcloudmanager-rust"
+version = "5.2.2"
+edition = "2024"
+license = "EPL-2.0"
+default-run = "LocalCloudManager"
+autobins = false
+
+
+[dependencies]
+arrowhead-messaging-rust = { path = "../ah5-messaging-rust" }
+arrowhead-support-rust = { path = "../ah5-support-runtime-rust" }
+hyper-util = { version = "0.1", features = ["server-auto", "tokio", "service"] }
+rustls = { version = "0.23.46", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-pki-types = "1"
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12"] }
+url = "2"
+axum = { version = "0.8", features = ["macros"] }
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+hmac = "0.12"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+scrypt = "0.11"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "fs", "signal", "time", "io-util", "sync"] }
+tower-http = { version = "0.6", features = ["catch-panic", "request-id", "trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+
+[dev-dependencies]
+percent-encoding = "2"
+tower = { version = "0.5", features = ["util"] }
+
+[[bin]]
+name = "LocalCloudManager"
+path = "src/secure_main.rs"
+
+[[bin]]
+name = "localcloudmanager-documentation"
+path = "src/bin/documentation.rs"
+
+[[bin]]
+name = "localcloudmanager-docker-proxy"
+path = "src/bin/docker-proxy.rs"
+

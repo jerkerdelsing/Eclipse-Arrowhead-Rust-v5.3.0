@@ -1,0 +1,48 @@
+\documentclass[a4paper]{arrowhead}
+\usepackage[T1]{fontenc}
+\usepackage{longtable,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\begin{document}
+\ArrowheadTitle{ConsumerAuthorization HTTPS / Rust}
+\ArrowheadType{Interface Design Description}
+\ArrowheadTypeShort{IDD}
+\ArrowheadVersion{5.2.2}
+\ArrowheadDate{2026-10-16}
+\ArrowheadAuthor{Implementation working draft}
+\ArrowheadStatus{DEVELOPMENT}
+\ArrowheadContact{Repository maintainers}
+\ArrowheadFooter{Eclipse Arrowhead -- native Rust core implementations}
+\ArrowheadSetup
+\section{Interface overview}
+Mandatory mutual TLS, Arrowhead token/certificate binding, JSON request and response documents. Echo responses, orchestration subscription IDs, authorization public keys and encryption IV responses are text. Certificate-only operations and management are distinguished in the table.
+\subsection{HTTPS interface operations}
+HTTPS uses JSON unless an operation specifies text. Request bodies are limited to 1 MiB; upstream responses to 8 MiB. Identity-token format: \texttt{Bearer IDENTITY-TOKEN//token}. Certificate-only identity operations still require verified mutual TLS and apply credential/certificate binding.
+\begin{longtable}{p{0.10\textwidth}p{0.65\textwidth}p{0.17\textwidth}}\toprule
+Method & Path & Access\\\midrule\endhead
+\texttt{GET} & \path{/consumerauthorization/general/mgmt/get-config} & management\\
+\texttt{POST} & \path{/consumerauthorization/general/mgmt/logs} & management\\
+\texttt{GET} & \path{/consumerauthorization/monitor/echo} & certificate\\
+\texttt{POST} & \path{/consumerauthorization/authorization/grant} & identity\\
+\texttt{DELETE} & \path{/consumerauthorization/authorization/revoke/{instanceId}} & identity\\
+\texttt{POST} & \path{/consumerauthorization/authorization/lookup} & identity\\
+\texttt{POST} & \path{/consumerauthorization/authorization/verify} & identity\\
+\texttt{POST} & \path{/consumerauthorization/authorization/mgmt/grant} & management\\
+\texttt{DELETE} & \path{/consumerauthorization/authorization/mgmt/revoke} & management\\
+\texttt{POST} & \path{/consumerauthorization/authorization/mgmt/query} & management\\
+\texttt{POST} & \path{/consumerauthorization/authorization/mgmt/check} & management\\
+\texttt{POST} & \path{/consumerauthorization/authorization-token/generate} & identity\\
+\texttt{GET} & \path{/consumerauthorization/authorization-token/token/verify/{token}} & identity\\
+\texttt{GET} & \path{/consumerauthorization/authorization-token/public-key} & identity\\
+\texttt{POST} & \path{/consumerauthorization/authorization-token/encryption-key} & identity\\
+\texttt{DELETE} & \path{/consumerauthorization/authorization-token/encryption-key} & identity\\
+\texttt{POST} & \path{/consumerauthorization/authorization/mgmt/token/generate} & management\\
+\texttt{POST} & \path{/consumerauthorization/authorization/mgmt/token/query} & management\\
+\texttt{DELETE} & \path{/consumerauthorization/authorization/mgmt/token/revoke} & management\\
+\texttt{POST} & \path{/consumerauthorization/authorization/mgmt/token/encryption-key} & management\\
+\texttt{DELETE} & \path{/consumerauthorization/authorization/mgmt/token/encryption-key} & management\\
+\bottomrule\end{longtable}
+Errors contain errorMessage, errorCode, exceptionType, origin and timestamp. Exact validation/error parity and all Java security-policy settings remain release gates. Unknown routes return 404; unavailable authorities fail closed.
+\section{Limitations}
+Management-over-provider policy precedence, scoped policies, metadata checks, usage/time-limited tokens, Base64 and RSA JWT tokens, AES wire encryption and authenticated key wrapping are implemented. Foreign-consumer/federation token generation, Java database import, complete DTO/error parity and broad cryptographic interoperability fixtures remain incomplete. AES ECB/CBC are legacy Java wire formats, not recommendations for new protocols.\end{document}

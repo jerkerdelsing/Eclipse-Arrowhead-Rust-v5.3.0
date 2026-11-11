@@ -1,0 +1,26 @@
+{
+  "advertiseAddress": "serviceregistry",
+  "advertisePort": 8443,
+  "authenticationUrl": "https://authentication:8444",
+  "authorizationUrl": "https://consumerauthorization:8445",
+  "bootstrapIdentities": [],
+  "ca": "secrets/trust.pem",
+  "certificate": "secrets/ServiceRegistry.pem",
+  "cloudSuffix": "RustCloud.Company.arrowhead.eu",
+  "discoveryDirectAccess": [
+    "Authentication",
+    "ConsumerAuthorization",
+    "DynamicServiceOrchestration",
+    "SimpleStoreServiceOrchestration"
+  ],
+  "listen": "127.0.0.1:8443",
+  "managementWhitelist": [],
+  "name": "ServiceRegistry",
+  "passwordFile": "secrets/ServiceRegistry.password",
+  "privateKey": "secrets/ServiceRegistry.key",
+  "register": false,
+  "registryUrl": "https://serviceregistry:8443",
+  "role": "serviceregistry",
+  "state": "state/serviceregistry.json",
+  "upstreams": {}
+}
