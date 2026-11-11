@@ -1,8 +1,8 @@
-# Eclipse Arrowhead 5.2.2 — Rust implementations
+# Eclipse Arrowhead 5.3.0 — Rust implementations
 
 > **Primary source:** This is the primary Rust implementation tree for further updates in this Eclipse workspace, designated on 2026-10-30. See [primary-source policy](../PRIMARY-SOURCES.md). Historical source-copy notes below describe provenance, not current development ownership.
 
-Native Rust implementations of the Arrowhead 5.2.2 core and support systems, organised like
+Native Rust implementations of the Arrowhead 5.3.0 core and support systems, organised like
 [`Eclipse-Arrowhead-java`](../Eclipse-Arrowhead-java): one core folder with a subfolder per core
 system, one `ah5-<System>-rust` folder per support system, and shared libraries alongside them.
 Everything is one Cargo workspace.
