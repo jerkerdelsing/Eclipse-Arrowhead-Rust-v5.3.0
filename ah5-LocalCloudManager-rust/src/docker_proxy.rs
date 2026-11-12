@@ -151,10 +151,23 @@ fn inventory_row(c: &Value) -> Value {
         .find(|h| status.contains(&format!("({h})")));
     json!({"id":c["Id"],"name":c["Names"].as_array().and_then(|n|n.first()).and_then(Value::as_str).unwrap_or("").trim_start_matches('/'),"service":role,"displayName":SYSTEMS.iter().find(|(_,r)|*r==role).map(|(n,_)|*n).unwrap_or(role),"image":c["Image"],"state":c["State"],"status":status,"health":health,"created":c["Created"],"managed":allowed_role(role)})
 }
+/// The gateway serves the containers of exactly one Compose project, named by CANDIDATE_PROJECT. Until 2026-11-12 the
+/// name was fixed to `arrowhead-v53-test-cloud-rust`, so no other deployment could run the gateway. Now any valid
+/// Compose project name is accepted (lowercase letters, digits, `-` and `_`, starting with a letter or digit, at most
+/// 63 characters); the scope is still that one project's label, matched exactly.
+fn valid_project(p: &str) -> bool {
+    !p.is_empty()
+        && p.len() <= 63
+        && p.bytes()
+            .next()
+            .is_some_and(|b| b.is_ascii_lowercase() || b.is_ascii_digit())
+        && p.bytes()
+            .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-' || b == b'_')
+}
 pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
     let project = std::env::var("CANDIDATE_PROJECT")?;
-    if project != "arrowhead-v53-test-cloud-rust" {
-        return Err("Gateway restricted to the isolated candidate project".into());
+    if !valid_project(&project) {
+        return Err("CANDIDATE_PROJECT must be a Docker Compose project name".into());
     }
     let token = String::from_utf8(arrowhead_support_rust::config::secret(&std::env::var(
         "GATEWAY_TOKEN_FILE",
@@ -199,6 +212,31 @@ mod tests {
             assert!(!allowed_role(r))
         }
         assert!(allowed_role("serviceregistry"));
+    }
+    #[test]
+    fn candidate_project_is_any_compose_project_name() {
+        for p in [
+            "arrowhead-v53-test-cloud-rust",
+            "arrowhead-v530-test-cloud-rust",
+            "cloud_2",
+            "9cloud",
+        ] {
+            assert!(valid_project(p), "{p}");
+        }
+        for p in [
+            "",
+            "-cloud",
+            "_cloud",
+            "Cloud",
+            "cloud name",
+            "cloud,other",
+            "cloud=x",
+            "../cloud",
+            "cloud\n",
+            &"a".repeat(64),
+        ] {
+            assert!(!valid_project(p), "{p:?}");
+        }
     }
     #[test]
     fn chunk_parser_is_bounded_by_input() {
