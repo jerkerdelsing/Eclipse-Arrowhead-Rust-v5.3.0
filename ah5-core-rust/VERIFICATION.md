@@ -10,8 +10,8 @@ Five independently runnable native Rust core-system profiles and their Arrowhead
 
 Reference roots:
 
-- `/Users/jerkerdelsing/Work/lule/EISLAB/Project/Eclipse/Arrowhead/ah5-core-java-spring/`
-- `/Users/jerkerdelsing/Work/lule/EISLAB/Project/Eclipse/Arrowhead/ah5-common-java-spring/`
+- `Arrowhead/ah5-core-java-spring/`
+- `Arrowhead/ah5-common-java-spring/`
 
 `documentation/contracts.json` records SHA-256 hashes of 873 local Java files, the extracted reference mappings, Rust mappings and service descriptors. The local reference includes workspace changes; a pristine upstream v5.2.2 tag was not asserted or independently verified.
 

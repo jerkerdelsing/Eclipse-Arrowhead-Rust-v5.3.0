@@ -2,7 +2,7 @@
   "interface": "generic_http",
   "notice": "Canonical relocation; original deployment copy retained unchanged. HTTP/legacy identity profile, not native TLS or AMQP telemetry.",
   "policy": "NONE",
-  "referenceRoot": "/Users/jerkerdelsing/Work/lule/EISLAB/Project/Eclipse/Arrowhead/Arrowhead-test-cloud-rust/core-systems",
+  "referenceRoot": "Arrowhead/Arrowhead-test-cloud-rust/core-systems",
   "referenceSHA256": {
     "../docs/LocalCloudManager.md": "079732e82307486e46dc6dc5b89f907ca76a739e53b73cdba928d3548ea10de1",
     "../docs/LocalCloudManager.sysml": "3a6c63f3d699eb0e740fc2b4eb4714090b85a7e00bbdf92cd058dd757a4f64ff",

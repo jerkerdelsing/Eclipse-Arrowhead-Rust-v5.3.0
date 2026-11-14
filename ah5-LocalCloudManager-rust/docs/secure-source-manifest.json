@@ -57,5 +57,5 @@
     "support/LocalCloudManager/src/ui.html": "73a4f873c2bc8d229424083f5c88a5d0580bda5bf19b2eac56f294949bdac021",
     "support/src/aigym_mqtt.rs": "bd0791c955f0608fc13fe77f982bc165467dbde09864d6c7979e4de7426233fd"
   },
-  "additionalSourceManifest": "/Users/jerkerdelsing/Work/lule/EISLAB/Project/Eclipse/Arrowhead/Arrowhead-test-cloud-rust/candidate-native/replacement-source-manifest.json"
+  "additionalSourceManifest": "Arrowhead/Arrowhead-test-cloud-rust/candidate-native/replacement-source-manifest.json"
 }
