@@ -2,3 +2,12 @@ target/
 output/
 tmp/
 .DS_Store
+
+# LaTeX build byproducts (documents are built with latexmk)
+*.aux
+*.fls
+*.fdb_latexmk
+*.toc
+*.out
+*.blg
+*.synctex.gz
