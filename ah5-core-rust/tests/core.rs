@@ -336,7 +336,7 @@ async fn registry_roundtrip_filters_and_ownership_are_enforced() {
         "/serviceregistry/system-discovery/register",
         &a,
         &empty(),
-        &json!({"version":"5.2.2","addresses":["127.0.0.1"]}),
+        &json!({"version":"5.4.0","addresses":["127.0.0.1"]}),
         &p,
     )
     .await
@@ -416,7 +416,7 @@ async fn registry_rejects_invalid_interfaces_and_rolls_back_batch() {
         "/serviceregistry/system-discovery/register",
         &BTreeMap::new(),
         &empty(),
-        &json!({"addresses":["127.0.0.1"],"version":"5.2.2"}),
+        &json!({"addresses":["127.0.0.1"],"version":"5.4.0"}),
         &caller("Provider"),
     )
     .await

@@ -494,7 +494,7 @@ async fn build_overview(state: &App) -> Result<Value, String> {
     let arrowhead_error = systems_result.err().or_else(|| services_result.err());
     Ok(json!({
         "collectedAt": collected_at,
-        "cloud": {"name": std::env::var("COMPOSE_PROJECT_NAME").unwrap_or_else(|_| "arrowhead-v53-test-cloud-rust".into()), "release":"5.2.2", "implementation":"rust", "registryReachable":arrowhead_error.is_none(), "dockerReachable":docker_error.is_none()},
+        "cloud": {"name": std::env::var("COMPOSE_PROJECT_NAME").unwrap_or_else(|_| "arrowhead-v53-test-cloud-rust".into()), "release":"5.4.0", "implementation":"rust", "registryReachable":arrowhead_error.is_none(), "dockerReachable":docker_error.is_none()},
         "summary": sample, "devices":[], "systems":systems, "services":services,
         "registryManagement":registry_management, "naming":{"valid":true,"violations":[]},
         "infrastructure":[], "orchestrations":[], "containers":containers, "history":history,

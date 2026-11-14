@@ -13,7 +13,7 @@ pub async fn publisher(app: App, mut stop: tokio::sync::watch::Receiver<bool>) {
         tokio::select! {_=stop.changed()=>break,_=clock.tick()=>{
             let result=async {
                 app.remote.call("ServiceRegistry","POST","/serviceregistry/service-discovery/register",&broker::monitor_descriptor(&app.config.name,&app.config.cloud_suffix,&config)).await?;
-                let mut status=json!({"state":"running","sourceTime":now(),"implementation":"rust","version":"5.2.2"});
+                let mut status=json!({"state":"running","sourceTime":now(),"implementation":"rust","version":"5.4.0"});
                 if app.config.role=="plantdescriptionengine" {status["synchronization"]=app.store.snapshot().get("pdeSync").and_then(|t|t.get("state")).cloned().unwrap_or(Value::Null);if status["synchronization"]["ok"]!=true{status["state"]="degraded".into();}}
                 broker::publish_monitor(&config,&app.config.name,&app.config.cloud_suffix,&tls,&status).await.map_err(|_|Error::unavailable("AMQP monitor publication failed"))?;
                 Ok::<_,Error>(())

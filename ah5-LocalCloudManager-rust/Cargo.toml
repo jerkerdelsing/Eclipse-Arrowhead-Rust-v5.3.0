@@ -1,6 +1,6 @@
 [package]
 name = "arrowhead-localcloudmanager-rust"
-version = "5.2.2"
+version = "5.4.0"
 edition = "2024"
 license = "EPL-2.0"
 default-run = "LocalCloudManager"

@@ -79,7 +79,7 @@ async fn dispatch(State(app): State<App>, request: Request) -> Response {
  let q=query(request.uri().query());let headers=request.headers().clone();let bytes=to_bytes(request.into_body(),1024*1024).await.map_err(|_|Error::new(413,"Request exceeds one MiB"))?;
  let req=if bytes.is_empty(){json!({})}else{serde_json::from_slice::<Value>(&bytes)?};
  if !req.is_object()&&!(req.is_array()&&((app.config.role=="datamanager"&&method=="PUT")||(app.config.role=="gatekeeper"&&method=="POST"&&path.contains("/mgmt/"))||(app.config.role=="gatetunnel"&&path.ends_with("/close_sessions")))){return Err(Error::bad("Expected JSON object"))}
- let (status,value)=if route.service=="generalManagement" {if route.operation=="get-config"{(200,json!({"map":{"implementation":"Rust","version":"5.2.2","system.name":app.config.name,"server.ssl.client-auth":"need","persistence":"atomic-json","qualification":"development"}}))}else{(200,page(app.store.rows("logs"),&req,"entries")?)}}
+ let (status,value)=if route.service=="generalManagement" {if route.operation=="get-config"{(200,json!({"map":{"implementation":"Rust","version":"5.4.0","system.name":app.config.name,"server.ssl.client-auth":"need","persistence":"atomic-json","qualification":"development"}}))}else{(200,page(app.store.rows("logs"),&req,"entries")?)}}
  else if app.config.role=="onboarding"{onboarding::handle(&app,&method,&path,&params,&q,&req,&caller,peer_certificate.as_ref()).await?}
  else{handle(&app,&method,&path,&params,&q,&req,&caller,&headers).await?};
  if app.config.role=="certificateauthority" && (method=="DELETE" || path.ends_with("/revocations")) {crate::ca::publish_crl(&app)?;}
@@ -177,7 +177,7 @@ pub async fn handle(
     }
 }
 pub async fn register(app: &App) -> Result<()> {
-    app.remote.call("ServiceRegistry","POST","/serviceregistry/system-discovery/register",&json!({"version":"5.2.2","addresses":[app.config.advertise_address],"metadata":{"implementation":"Rust","qualification":"development"}})).await?;
+    app.remote.call("ServiceRegistry","POST","/serviceregistry/system-discovery/register",&json!({"version":"5.4.0","addresses":[app.config.advertise_address],"metadata":{"implementation":"Rust","qualification":"development"}})).await?;
     let mut registered_ids = Vec::new();
     for service in contracts::services(&app.config.role) {
         let mut properties = json!({"accessAddresses":[app.config.advertise_address],"accessPort":app.config.advertise_port,"basePath":service.base_path,"operations":service.operations});

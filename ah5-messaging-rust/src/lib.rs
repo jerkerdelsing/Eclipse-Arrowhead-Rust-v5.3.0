@@ -208,7 +208,7 @@ impl Publisher {
 pub fn observations(name: &str, cloud: &str, status: &Value) -> Vec<(String, Value)> {
     ["echo","power","status"].into_iter().map(|kind| {
         let value=match kind {"echo"=>json!({"status":"alive"}),"power"=>json!({"supplyType":"line","state":"available"}),_=>status.clone()};
-        (format!("{cloud}.sysmonitor.{name}.{name}.{kind}"),json!({"schemaVersion":"1.0","observationId":uuid::Uuid::new_v4().to_string(),"providerSystem":name,"serviceInstance":name,"observationType":kind,"sourceTime":status["sourceTime"],"value":value,"unit":if kind=="echo"{Value::Null}else{json!("1")},"quality":"good","metadata":{"implementation":"rust","publisherMode":"native","arrowheadVersion":"5.2.2"}}))
+        (format!("{cloud}.sysmonitor.{name}.{name}.{kind}"),json!({"schemaVersion":"1.0","observationId":uuid::Uuid::new_v4().to_string(),"providerSystem":name,"serviceInstance":name,"observationType":kind,"sourceTime":status["sourceTime"],"value":value,"unit":if kind=="echo"{Value::Null}else{json!("1")},"quality":"good","metadata":{"implementation":"rust","publisherMode":"native","arrowheadVersion":"5.4.0"}}))
     }).collect()
 }
 pub async fn publish_monitor(

@@ -93,7 +93,7 @@ async fn all_five_core_systems_interoperate_over_real_mutual_tls() {
         "POST",
         "/serviceregistry/system-discovery/register",
         &pt,
-        json!({"version":"5.2.2","addresses":["127.0.0.1"],"metadata":{"zone":"laboratory"}}),
+        json!({"version":"5.4.0","addresses":["127.0.0.1"],"metadata":{"zone":"laboratory"}}),
     )
     .await;
     assert_eq!(code, 201, "{result}");

@@ -19,7 +19,7 @@ async fn register(config: &Config) -> Result<(), Box<dyn std::error::Error + Sen
     let client = reqwest::Client::new();
     let auth = format!("Bearer SYSTEM//{}", config.system_name);
     client.post(format!("{}/serviceregistry/system-discovery/register", config.registry_url))
-        .header("Authorization", &auth).json(&json!({"version":"5.2.2","addresses":[config.domain_name],"metadata":{"implementation":"rust"}}))
+        .header("Authorization", &auth).json(&json!({"version":"5.4.0","addresses":[config.domain_name],"metadata":{"implementation":"rust"}}))
         .send().await?.error_for_status()?;
     for service in services(&config.role) {
         let body = json!({

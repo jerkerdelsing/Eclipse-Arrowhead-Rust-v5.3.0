@@ -62,7 +62,7 @@ dependencies = [
 
 [[package]]
 name = "arrowhead-core-rust"
-version = "5.2.2"
+version = "5.4.0"
 dependencies = [
  "aes",
  "arrowhead-messaging-rust",
@@ -94,7 +94,7 @@ dependencies = [
 
 [[package]]
 name = "arrowhead-localcloudmanager-rust"
-version = "5.2.2"
+version = "5.4.0"
 dependencies = [
  "arrowhead-messaging-rust",
  "arrowhead-support-rust",
@@ -123,7 +123,7 @@ dependencies = [
 
 [[package]]
 name = "arrowhead-messaging-rust"
-version = "5.2.2"
+version = "5.4.0"
 dependencies = [
  "amqprs",
  "async-trait",
@@ -138,7 +138,7 @@ dependencies = [
 
 [[package]]
 name = "arrowhead-support-rust"
-version = "5.2.2"
+version = "5.4.0"
 dependencies = [
  "arrowhead-messaging-rust",
  "axum",

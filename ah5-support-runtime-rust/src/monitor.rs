@@ -32,7 +32,7 @@ pub fn health(app: &App) -> Value {
     status["state"] = status["status"].clone();
     status["system"] = app.config.name.clone().into();
     status["implementation"] = json!("rust");
-    status["version"] = json!("5.2.2");
+    status["version"] = json!("5.4.0");
     status["brokerWorkersImplemented"] = json!(true);
     status["amqpConnected"] = json!(status["amqp"]["connected"] == true);
     status["mqttConnected"] = json!(status["mqtt"]["connected"] == true);

@@ -90,7 +90,7 @@ async fn dispatch(State(app): State<App>, request: Request) -> Response {
         if route.service=="echo"{return Ok((StatusCode::OK,"Got it!").into_response())}
         let q=query(request.uri().query());let bytes=to_bytes(request.into_body(),1024*1024).await.map_err(|_|Error::new(413,"Request body exceeds limit"))?;
         let req:Value=if bytes.is_empty(){json!({})}else{let v:Value=serde_json::from_slice(&bytes)?;if !v.is_object(){return Err(Error::bad("Expected one JSON object"))}v};
-        let(status,value)=if route.service=="generalManagement"{if route.operation=="get-config"{let mut settings=json!({"implementation":"Rust","version":"5.2.2","system.name":app.config.name,"server.ssl.enabled":"true","server.ssl.client-auth":"need","persistence":"atomic-json"});let keys=array(&q,"keys");if !keys.is_empty(){settings.as_object_mut().unwrap().retain(|k,_|keys.iter().any(|v|v==k));}(200,json!({"map":settings}))}else{(200,page(app.store.rows("logs"),&req,"entries")?)}}
+        let(status,value)=if route.service=="generalManagement"{if route.operation=="get-config"{let mut settings=json!({"implementation":"Rust","version":"5.4.0","system.name":app.config.name,"server.ssl.enabled":"true","server.ssl.client-auth":"need","persistence":"atomic-json"});let keys=array(&q,"keys");if !keys.is_empty(){settings.as_object_mut().unwrap().retain(|k,_|keys.iter().any(|v|v==k));}(200,json!({"map":settings}))}else{(200,page(app.store.rows("logs"),&req,"entries")?)}}
         else{match app.config.role.as_str(){"authentication"=>{let permit=app.identity_workers.clone().try_acquire_owned().map_err(|_|Error::unavailable("Identity worker capacity reached"))?;let app=app.clone();let method=method.clone();let path=path.clone();let caller=caller.clone();let params=params.clone();let q=q.clone();let req=req.clone();tokio::task::spawn_blocking(move||{let _permit=permit;authentication::handle(&app,&method,&path,&params,&q,&req,&caller)}).await.map_err(|_|Error::new(500,"Identity worker failed"))??},"serviceregistry"=>registry::handle(&app,&method,&path,&params,&q,&req,&caller).await?,"consumer-authorization"=>authorization::handle(&app,&method,&path,&params,&q,&req,&caller).await?,_=>orchestration::handle(&app,&method,&path,&params,&q,&req,&caller).await?}};
         let status=StatusCode::from_u16(status).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR);
         let text=path.ends_with("/public-key")||path.ends_with("/encryption-key")&&method=="POST"&&!path.contains("/mgmt/")||path.ends_with("/subscribe")&&!path.contains("/mgmt/");
@@ -115,7 +115,7 @@ async fn dispatch(State(app): State<App>, request: Request) -> Response {
     response
 }
 pub async fn register(app: &App) -> Result<()> {
-    let request = json!({"version":"5.2.2","addresses":[app.config.advertise_address],"metadata":{"implementation":"Rust"}});
+    let request = json!({"version":"5.4.0","addresses":[app.config.advertise_address],"metadata":{"implementation":"Rust"}});
     if app.config.role == "serviceregistry" {
         let caller = Principal {
             name: app.config.name.clone(),

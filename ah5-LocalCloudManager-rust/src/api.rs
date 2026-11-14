@@ -156,7 +156,7 @@ async fn localcloud_status(
     Ok(Json(json!({
         "systemName": state.config.system_name,
         "status": "AVAILABLE",
-        "version": "5.2.2",
+        "version": "5.4.0",
         "implementation": "rust",
         "timestamp": now()
     })))

@@ -212,7 +212,7 @@ async fn route(
             let verified=app.remote.call("Authentication","GET",&format!("/authentication/identity/verify/{}",security::encode(&token)),&Value::Null).await?;
             if verified["verified"]!=true||verified["systemName"]!=peer.name{return Err(Error::new(401,"Token/certificate mismatch"));}
             if verified["sysop"]!=true&&peer.name!="LocalCloudManager"{return Err(Error::denied());}
-            return Ok((axum::http::StatusCode::OK,axum::Json(json!({"map":{"implementation":"Rust","version":"5.2.2","system.name":NAME,"qualification":"test application"}}))).into_response());
+            return Ok((axum::http::StatusCode::OK,axum::Json(json!({"map":{"implementation":"Rust","version":"5.4.0","system.name":NAME,"qualification":"test application"}}))).into_response());
         }
         if path=="/random-data-producer/monitor/echo"{return Ok((axum::http::StatusCode::OK,"Got it!").into_response());}
         if path!="/health"&&path!="/random-data-producer/latest"{return Err(Error::new(404,"Not found"));}
